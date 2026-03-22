@@ -1,0 +1,32 @@
+name: UT Scraper - Prog Diaria
+
+on:
+  schedule:
+    # 5:00 PM hora El Salvador (CST = UTC-6) => 23:00 UTC
+    - cron: '0 23 * * *'
+  workflow_dispatch: # Permite ejecutar manualmente desde GitHub
+
+jobs:
+  scraper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
+          TIPO: prog
+        run: python scraper.py
