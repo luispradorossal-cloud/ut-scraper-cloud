@@ -761,36 +761,24 @@ async function saveDestinatarios() {
         return;
     }
 
-    // Encrypt using libsodium-wrappers-sumo (needed for crypto_box_seal)
+    // Disparar workflow que actualiza el secret
     try {
-        if (!window._sodiumReady) {
-            status.textContent = 'Cargando encriptacion...';
-            await loadScript('https://cdn.jsdelivr.net/npm/libsodium-wrappers-sumo@0.7.15/dist/modules-sumo/libsodium-wrappers.js');
-            await window.sodium.ready;
-            window._sodiumReady = true;
-        }
-
-        var _sodium = window.sodium;
-        var keyBytes = _sodium.from_base64(keyData.key, _sodium.base64_variants.ORIGINAL);
-        var messageBytes = _sodium.from_string(emailStr);
-        var encryptedBytes = _sodium.crypto_box_seal(messageBytes, keyBytes);
-        var encryptedBase64 = _sodium.to_base64(encryptedBytes, _sodium.base64_variants.ORIGINAL);
-
-        var result = await ghApi('repos/' + REPO + '/actions/secrets/DEST_EMAIL', 'PUT', {
-            encrypted_value: encryptedBase64,
-            key_id: keyData.key_id
-        });
+        var result = await ghApi(
+            'repos/' + REPO + '/actions/workflows/actualizar_destinatarios.yml/dispatches',
+            'POST',
+            { ref: 'master', inputs: { correos: emailStr } }
+        );
 
         if (result) {
             status.textContent = 'Guardado! Los flujos automaticos enviaran a: ' + list.join(', ');
             status.style.color = '#86efac';
         } else {
-            status.textContent = 'Error al guardar';
+            status.textContent = 'Error al guardar. Verifica tu token.';
             status.style.color = '#fca5a5';
         }
     } catch (e) {
-        console.error('Encryption error:', e);
-        status.textContent = 'Error de encriptacion: ' + e.message;
+        console.error('Save error:', e);
+        status.textContent = 'Error: ' + e.message;
         status.style.color = '#fca5a5';
     }
 }

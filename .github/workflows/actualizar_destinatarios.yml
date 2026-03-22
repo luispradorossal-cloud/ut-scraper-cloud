@@ -1,0 +1,20 @@
+name: Actualizar Destinatarios
+
+on:
+  workflow_dispatch:
+    inputs:
+      correos:
+        description: 'Correos separados por coma'
+        required: true
+        type: string
+
+jobs:
+  update-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Actualizar DEST_EMAIL secret
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh secret set DEST_EMAIL -b "${{ inputs.correos }}" -R luispradorossal-cloud/ut-scraper-cloud
+          echo "DEST_EMAIL actualizado a: ${{ inputs.correos }}"
