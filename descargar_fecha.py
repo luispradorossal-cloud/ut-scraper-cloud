@@ -17,11 +17,19 @@ import os
 import smtplib
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
+
+# Zona horaria El Salvador (UTC-6)
+TZ_SV = timezone(timedelta(hours=-6))
+
+
+def now_sv():
+    """Retorna la hora actual en zona horaria de El Salvador."""
+    return datetime.now(TZ_SV)
 
 
 # --- Config UT ----------------------------------------------------------------
@@ -74,7 +82,6 @@ def create_session():
 # --- UT Downloads -------------------------------------------------------------
 
 def ut_download(session, filename, year, output_dir):
-    """Descarga un archivo de UT."""
     filepath = output_dir / filename
     params = UT_DL_PARAMS.copy()
     params["p_p_resource_id"] = filename
@@ -99,7 +106,6 @@ def ut_download(session, filename, year, output_dir):
 
 
 def ut_check_exists(session, filename, year):
-    """Verifica si el archivo existe en UT."""
     try:
         session.headers["Referer"] = UT_BASE_URL
         session.get(UT_BASE_URL, timeout=15)
@@ -120,7 +126,6 @@ def ut_check_exists(session, filename, year):
 # --- EOR Download -------------------------------------------------------------
 
 def eor_download(session, filename, output_dir):
-    """Descarga un archivo de EOR."""
     filepath = output_dir / filename
     file_hash = "l1_" + base64.b64encode(filename.encode()).decode()
     params = EOR_DL_PARAMS.copy()
@@ -156,30 +161,32 @@ def eor_download(session, filename, output_dir):
 # --- Email --------------------------------------------------------------------
 
 def send_combined_email(files, fecha_str):
-    """Envia todos los archivos en UN solo correo."""
     gmail_user = os.environ["GMAIL_USER"]
     gmail_pass = os.environ["GMAIL_PASS"]
     dest_email = os.environ["DEST_EMAIL"]
 
-    now = datetime.now()
+    ahora = now_sv()
+
+    # Convertir fecha para el asunto
+    dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+    fecha_display = dt.strftime("%d/%m/%Y")
 
     msg = email.mime.multipart.MIMEMultipart()
     msg["From"] = gmail_user
     msg["To"] = dest_email
-    msg["Subject"] = f"Predespacho {fecha_str} - UT & EOR"
+    msg["Subject"] = f"Predespacho {fecha_display} - UT & EOR"
 
-    # Resumen de archivos
     lista = []
     for f in files:
         lista.append(f"  - {f.name} ({f.stat().st_size / 1024:.0f} KB)")
     archivos_txt = "\n".join(lista)
 
     body = (
-        f"Descarga por Fecha - {fecha_str}\n"
+        f"Descarga por Fecha - {fecha_display}\n"
         f"{'=' * 50}\n\n"
         f"Archivos adjuntos ({len(files)}):\n"
         f"{archivos_txt}\n\n"
-        f"Descargado: {now.strftime('%d/%m/%Y %H:%M')}\n\n"
+        f"Hora de descarga: {ahora.strftime('%H:%M')} (hora SV)\n\n"
         f"---\n"
         f"Enviado automaticamente\n"
     )
@@ -218,6 +225,7 @@ def main():
     prog_name = f"Prog_Diaria{ddmmyy}.xlsx"
     eor_name = f"PUB004-PRE-{yyyymmdd}-OSO002.zip"
 
+    ahora = now_sv()
     print("=" * 60)
     print("  DESCARGA POR FECHA - TODOS LOS ARCHIVOS")
     print("=" * 60)
@@ -225,7 +233,7 @@ def main():
     print(f"  Aislado:   {aislado_name}")
     print(f"  ProgDia:   {prog_name}")
     print(f"  EOR:       {eor_name}")
-    print(f"  Inicio:    {datetime.now().strftime('%H:%M:%S')}")
+    print(f"  Inicio:    {ahora.strftime('%H:%M:%S')} (hora SV)")
     print("=" * 60)
 
     session = create_session()
