@@ -780,7 +780,8 @@ async function loadLogs() {
     }
 
     var runs = data.workflow_runs.filter(function(r) {
-        return r.name !== 'pages-build-deployment' && r.name !== 'Actualizar Destinatarios';
+        var n = (r.name || '').toLowerCase();
+        return n.indexOf('pages') === -1 && n.indexOf('destinatarios') === -1;
     });
 
     if (runs.length === 0) {
