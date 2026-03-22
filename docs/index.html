@@ -407,10 +407,14 @@
 
     <div class="date-section">
         <div class="date-card">
-            <p class="date-desc">Descarga los 3 documentos de una fecha especifica y los envia por correo.</p>
+            <p class="date-desc">Descarga los 3 documentos (UT Aislado, UT Prog Diaria, EOR Predespacho) de una fecha y los envia en un solo correo.</p>
             <div class="date-form">
                 <label for="fechaInput">Fecha:</label>
                 <input type="date" id="fechaInput">
+            </div>
+            <div class="date-form" style="margin-top: 10px;">
+                <label for="correoInput">Correo:</label>
+                <input type="email" id="correoInput" placeholder="correo@ejemplo.com" style="flex:1; background:#0f172a; border:1px solid #475569; border-radius:6px; padding:8px 12px; color:#e2e8f0; font-size:14px;">
                 <button class="btn-date" id="btn-fecha" onclick="runByDate()">
                     Descargar y enviar
                 </button>
@@ -575,28 +579,30 @@ function refreshAll() {
 
 async function runByDate() {
     const fechaInput = document.getElementById('fechaInput');
+    const correoInput = document.getElementById('correoInput');
     const btn = document.getElementById('btn-fecha');
     const status = document.getElementById('date-status');
 
     const fecha = fechaInput.value;
-    if (!fecha) {
-        alert('Selecciona una fecha');
-        return;
-    }
+    const correo = correoInput.value.trim();
+
+    if (!fecha) { alert('Selecciona una fecha'); return; }
+    if (!correo) { alert('Ingresa un correo destinatario'); return; }
+    localStorage.setItem('dest_email', correo);
 
     btn.textContent = 'Enviando...';
     btn.disabled = true;
-    status.textContent = 'Disparando los 3 scrapers para ' + fecha + '...';
+    status.textContent = 'Descargando archivos del ' + fecha + ' y enviando a ' + correo + '...';
     status.style.color = '#fdba74';
 
     const result = await ghApi(
         'repos/' + REPO + '/actions/workflows/descargar_fecha.yml/dispatches',
         'POST',
-        { ref: 'master', inputs: { fecha: fecha } }
+        { ref: 'master', inputs: { fecha: fecha, correo: correo } }
     );
 
     if (result) {
-        status.innerHTML = 'Ejecutando los 3 scrapers para <strong>' + fecha + '</strong>. Los archivos llegaran a tu correo.';
+        status.innerHTML = 'Los 3 archivos del <strong>' + fecha + '</strong> se enviaran a <strong>' + correo + '</strong> en un solo correo.';
         status.style.color = '#86efac';
         btn.textContent = 'Enviado!';
         setTimeout(function() {
@@ -616,6 +622,9 @@ window.addEventListener('DOMContentLoaded', function() {
     // Set default date to today
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('fechaInput').value = today;
+    // Pre-fill email from localStorage
+    var savedEmail = localStorage.getItem('dest_email') || 'luis.prado.rossal@gmail.com';
+    document.getElementById('correoInput').value = savedEmail;
     const token = getToken();
     if (token) {
         updateTokenStatus(true);
