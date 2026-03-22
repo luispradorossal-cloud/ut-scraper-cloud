@@ -51,7 +51,7 @@ MAX_RETRIES = 6       # 30 minutos total
 
 # --- Email --------------------------------------------------------------------
 
-def send_email(filepath: Path, tipo: str):
+def send_email(filepath: Path, tipo: str, target_date_str: str = None):
     gmail_user = os.environ["GMAIL_USER"]
     gmail_pass = os.environ["GMAIL_PASS"]
     dest_email = os.environ["DEST_EMAIL"]  # soporta multiples separados por coma
@@ -59,10 +59,17 @@ def send_email(filepath: Path, tipo: str):
     now = datetime.now()
     tipo_nombre = "Prog_Diaria_Inicial_Aislado" if tipo == "aislado" else "Prog_Diaria"
 
+    # Use the target file date for subject/body, not today's date
+    if target_date_str:
+        dt = datetime.strptime(target_date_str, "%Y-%m-%d")
+        fecha_archivo = dt.strftime("%d/%m/%Y")
+    else:
+        fecha_archivo = now.strftime("%d/%m/%Y")
+
     msg = email.mime.multipart.MIMEMultipart()
     msg["From"] = gmail_user
     msg["To"] = dest_email  # Gmail acepta "a@x.com,b@x.com"
-    msg["Subject"] = f"UT - {tipo_nombre} - {now.strftime('%d/%m/%Y')}"
+    msg["Subject"] = f"UT - {tipo_nombre} - {fecha_archivo}"
 
     body = (
         f"Programacion Diaria - UT El Salvador\n"
@@ -216,7 +223,7 @@ def main():
             result = download_file(session, expected_file, year, output_dir)
 
             if result:
-                send_email(result, tipo)
+                send_email(result, tipo, date_str)
                 print(f"\n  COMPLETADO - {datetime.now().strftime('%H:%M:%S')}")
                 return
 
