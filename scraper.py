@@ -18,7 +18,7 @@ import os
 import smtplib
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -48,35 +48,42 @@ DOWNLOAD_PARAMS_BASE = {
 RETRY_INTERVAL = 300  # 5 minutos
 MAX_RETRIES = 6       # 30 minutos total
 
+# Zona horaria El Salvador (UTC-6)
+TZ_SV = timezone(timedelta(hours=-6))
+
+
+def now_sv():
+    """Retorna la hora actual en zona horaria de El Salvador."""
+    return datetime.now(TZ_SV)
+
 
 # --- Email --------------------------------------------------------------------
 
 def send_email(filepath: Path, tipo: str, target_date_str: str = None):
     gmail_user = os.environ["GMAIL_USER"]
     gmail_pass = os.environ["GMAIL_PASS"]
-    dest_email = os.environ["DEST_EMAIL"]  # soporta multiples separados por coma
+    dest_email = os.environ["DEST_EMAIL"]
 
-    now = datetime.now()
+    ahora = now_sv()
     tipo_nombre = "Prog_Diaria_Inicial_Aislado" if tipo == "aislado" else "Prog_Diaria"
 
-    # Use the target file date for subject/body, not today's date
     if target_date_str:
         dt = datetime.strptime(target_date_str, "%Y-%m-%d")
         fecha_archivo = dt.strftime("%d/%m/%Y")
     else:
-        fecha_archivo = now.strftime("%d/%m/%Y")
+        fecha_archivo = ahora.strftime("%d/%m/%Y")
 
     msg = email.mime.multipart.MIMEMultipart()
     msg["From"] = gmail_user
-    msg["To"] = dest_email  # Gmail acepta "a@x.com,b@x.com"
+    msg["To"] = dest_email
     msg["Subject"] = f"UT - {tipo_nombre} - {fecha_archivo}"
 
     body = (
         f"Programacion Diaria - UT El Salvador\n"
         f"{'=' * 45}\n\n"
         f"Tipo: {tipo_nombre}\n"
-        f"Fecha: {now.strftime('%d/%m/%Y')}\n"
-        f"Hora de descarga: {now.strftime('%H:%M')}\n"
+        f"Fecha: {fecha_archivo}\n"
+        f"Hora de descarga: {ahora.strftime('%H:%M')} (hora SV)\n"
         f"Archivo: {filepath.name} ({filepath.stat().st_size / 1024:.0f} KB)\n\n"
         f"---\n"
         f"Enviado automaticamente por GitHub Actions\n"
@@ -172,11 +179,11 @@ def download_file(session, filename, year, output_dir):
 def get_target_filename(tipo: str, target_date=None) -> tuple:
     """Genera nombre de archivo y ano para la fecha objetivo.
     Si TARGET_DATE env var esta definida (YYYY-MM-DD), usa esa fecha.
-    Si no, usa manana."""
+    Si no, usa manana (hora de El Salvador)."""
     if target_date:
         dt = datetime.strptime(target_date, "%Y-%m-%d")
     else:
-        dt = datetime.now() + timedelta(days=1)
+        dt = now_sv() + timedelta(days=1)
     ddmmyy = dt.strftime("%d%m%y")
     year = str(dt.year)
     if tipo == "aislado":
@@ -189,13 +196,13 @@ def get_target_filename(tipo: str, target_date=None) -> tuple:
 
 def main():
     tipo = os.environ.get("TIPO", "aislado")
-    target_date = os.environ.get("TARGET_DATE")  # opcional: YYYY-MM-DD
+    target_date = os.environ.get("TARGET_DATE")
     expected_file, year, date_str = get_target_filename(tipo, target_date)
 
-    # Si se especifico fecha, no reintentar (el archivo ya deberia existir)
     max_retries = 1 if target_date else MAX_RETRIES
     retry_interval = 30 if target_date else RETRY_INTERVAL
 
+    ahora = now_sv()
     print("=" * 60)
     print("  UT EL SALVADOR - GITHUB ACTIONS")
     print("=" * 60)
@@ -204,7 +211,7 @@ def main():
     print(f"  Fecha objetivo:   {date_str}")
     print(f"  Carpeta ano:      {year}")
     print(f"  Reintentos:       cada {retry_interval // 60} min, max {max_retries}")
-    print(f"  Inicio:           {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  Inicio:           {ahora.strftime('%Y-%m-%d %H:%M:%S')} (hora SV)")
     print("=" * 60)
 
     session = create_session()
@@ -212,7 +219,7 @@ def main():
     output_dir.mkdir(exist_ok=True)
 
     for attempt in range(1, max_retries + 1):
-        print(f"\n  --- Intento {attempt}/{max_retries} - {datetime.now().strftime('%H:%M:%S')} ---")
+        print(f"\n  --- Intento {attempt}/{max_retries} - {now_sv().strftime('%H:%M:%S')} (hora SV) ---")
 
         files = list_files(session, year)
         print(f"  [BUSCAR] {len(files)} archivos en carpeta {year}")
@@ -224,7 +231,7 @@ def main():
 
             if result:
                 send_email(result, tipo, date_str)
-                print(f"\n  COMPLETADO - {datetime.now().strftime('%H:%M:%S')}")
+                print(f"\n  COMPLETADO - {now_sv().strftime('%H:%M:%S')} (hora SV)")
                 return
 
             print(f"  [ERROR] Descarga fallida")
@@ -235,8 +242,8 @@ def main():
             print(f"  Mas recientes: {', '.join(recent)}")
 
         if attempt < max_retries:
-            next_t = (datetime.now() + timedelta(seconds=retry_interval)).strftime('%H:%M:%S')
-            print(f"  [ESPERAR] Proximo intento a las {next_t}...")
+            next_t = (now_sv() + timedelta(seconds=retry_interval)).strftime('%H:%M:%S')
+            print(f"  [ESPERAR] Proximo intento a las {next_t} (hora SV)...")
             time.sleep(retry_interval)
 
     print(f"\n  TIMEOUT - No se encontro {expected_file} despues de {max_retries} intentos")
