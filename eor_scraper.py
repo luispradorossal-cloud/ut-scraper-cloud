@@ -3,18 +3,11 @@ EOR (Ente Operador Regional) - Descargador de Predespacho SV
 Descarga archivos ZIP de predespacho desde www.enteoperador.org
 
 Patron de archivos: PUB004-PRE-YYYYMMDD-OSO002.zip
-URL de descarga: via elFinder connector con hash base64 del nombre
 
-Uso manual:
-    python eor_scraper.py --list-only                # Listar archivos recientes
-    python eor_scraper.py --date 2026-03-22          # Descargar fecha especifica
-    python eor_scraper.py                            # Descargar el mas reciente
-
-Modo watch (busca archivo de hoy, reintenta cada 5 min por 30 min):
+Uso:
+    python eor_scraper.py --list-only
+    python eor_scraper.py --date 2026-03-22
     python eor_scraper.py --watch --email
-
-Configurar correo:
-    python eor_scraper.py --setup-email
 """
 
 import argparse
@@ -29,7 +22,7 @@ import os
 import smtplib
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # Forzar UTF-8 en stdout para Windows
@@ -60,14 +53,12 @@ DOWNLOAD_PARAMS = {
     "cmd": "file",
 }
 
-# Pagina donde esta el elFinder (para obtener listado)
 PAGE_URL = (
     "https://www.enteoperador.org/mer/gestion-comercial/"
     "informes-publicos-de-procesos-comerciales/"
     "informe-de-procesos-comerciales-el-salvador/predespacho-sv/"
 )
 
-# elFinder connector params para listar archivos
 LIST_PARAMS = {
     "red_fm_connect": "true",
     "front": "user",
@@ -75,7 +66,7 @@ LIST_PARAMS = {
     "defaults": "0",
     "access_all": "0",
     "cmd": "open",
-    "target": "l1_Lw",  # root directory hash
+    "target": "l1_Lw",
 }
 
 SCRIPT_DIR = Path(__file__).parent.resolve()
@@ -84,29 +75,29 @@ CONFIG_FILE = SCRIPT_DIR / "eor_config.json"
 FILE_PREFIX = "PUB004-PRE-"
 FILE_SUFFIX = "-OSO002.zip"
 
+# Zona horaria El Salvador (UTC-6)
+TZ_SV = timezone(timedelta(hours=-6))
+
+
+def now_sv():
+    """Retorna la hora actual en zona horaria de El Salvador."""
+    return datetime.now(TZ_SV)
+
 
 # --- Utilidades ---------------------------------------------------------------
 
 def filename_to_hash(filename: str) -> str:
-    """Convierte nombre de archivo a hash elFinder (l1_ + base64)."""
     encoded = base64.b64encode(filename.encode()).decode()
     return f"l1_{encoded}"
 
 
 def build_expected_filename(date_str: str) -> str:
-    """Construye el nombre de archivo esperado para una fecha YYYY-MM-DD."""
     dt = datetime.strptime(date_str, "%Y-%m-%d")
     return f"{FILE_PREFIX}{dt.strftime('%Y%m%d')}{FILE_SUFFIX}"
 
 
-def get_tomorrow_date() -> str:
-    """Retorna la fecha de manana como YYYY-MM-DD."""
-    return (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-
-
 def get_today_date() -> str:
-    """Retorna la fecha de hoy como YYYY-MM-DD."""
-    return datetime.now().strftime("%Y-%m-%d")
+    return now_sv().strftime("%Y-%m-%d")
 
 
 # --- Correo -------------------------------------------------------------------
@@ -155,8 +146,7 @@ def setup_email():
         print(f"ERROR: {e}")
 
 
-def send_email(filepath: Path) -> bool:
-    # Preferir variables de entorno (GitHub Actions), luego config local
+def send_email(filepath: Path, target_date_str: str = None) -> bool:
     if os.environ.get("GMAIL_USER"):
         ec = {
             "gmail_user": os.environ["GMAIL_USER"],
@@ -174,19 +164,27 @@ def send_email(filepath: Path) -> bool:
                 print("  [CORREO] No configurado.")
                 return False
         ec = config["email"]
-    now = datetime.now()
+
+    ahora = now_sv()
+
+    if target_date_str:
+        dt = datetime.strptime(target_date_str, "%Y-%m-%d")
+        fecha_archivo = dt.strftime("%d/%m/%Y")
+    else:
+        fecha_archivo = ahora.strftime("%d/%m/%Y")
 
     msg = email.mime.multipart.MIMEMultipart()
     msg["From"] = ec["gmail_user"]
     msg["To"] = ec["dest_email"]
-    msg["Subject"] = f"EOR Predespacho SV - {now.strftime('%d/%m/%Y')}"
+    msg["Subject"] = f"EOR Predespacho SV - {fecha_archivo}"
 
     body = (
         f"Predespacho El Salvador - Ente Operador Regional\n"
         f"{'=' * 50}\n\n"
+        f"Fecha: {fecha_archivo}\n"
         f"Archivo: {filepath.name}\n"
         f"Tamano: {filepath.stat().st_size / 1024:.0f} KB\n"
-        f"Descargado: {now.strftime('%d/%m/%Y %H:%M')}\n\n"
+        f"Hora de descarga: {ahora.strftime('%H:%M')} (hora SV)\n\n"
         f"---\n"
         f"Enviado automaticamente por eor_scraper.py\n"
     )
@@ -229,10 +227,8 @@ def create_session() -> requests.Session:
 
 
 def list_files(session: requests.Session, limit: int = 30) -> list:
-    """Lista los archivos disponibles via elFinder connector."""
     print("  [BUSCAR] Consultando archivos en EOR...")
 
-    # Primero acceder a la pagina para cookies
     try:
         session.get(PAGE_URL, timeout=30)
     except requests.RequestException:
@@ -259,7 +255,6 @@ def list_files(session: requests.Session, limit: int = 30) -> list:
                 "date": f.get("ts", 0),
             })
 
-    # Ordenar por nombre (fecha descendente)
     files.sort(key=lambda x: x["filename"], reverse=True)
 
     if limit:
@@ -269,8 +264,7 @@ def list_files(session: requests.Session, limit: int = 30) -> list:
     return files
 
 
-def download_file(session: requests.Session, filename: str, output_dir: Path, overwrite: bool = False) -> Path | None:
-    """Descarga un archivo por su nombre."""
+def download_file(session: requests.Session, filename: str, output_dir: Path, overwrite: bool = False):
     filepath = output_dir / filename
 
     if filepath.exists() and not overwrite:
@@ -312,10 +306,6 @@ def download_file(session: requests.Session, filename: str, output_dir: Path, ov
 
 
 def watch_and_download(target_date: str, send_mail: bool, retry_interval: int = 300, max_retries: int = 6):
-    """
-    Modo watch: busca el archivo de una fecha especifica.
-    Reintenta cada retry_interval segundos, maximo max_retries veces.
-    """
     expected_file = build_expected_filename(target_date)
 
     print("=" * 60)
@@ -327,7 +317,7 @@ def watch_and_download(target_date: str, send_mail: bool, retry_interval: int = 
     print(f"  Intentos maximos: {max_retries}")
     print(f"  Tiempo maximo:    {(retry_interval * max_retries) // 60} minutos")
     print(f"  Enviar correo:    {'Si' if send_mail else 'No'}")
-    print(f"  Inicio:           {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  Inicio:           {now_sv().strftime('%Y-%m-%d %H:%M:%S')} (hora SV)")
     print("=" * 60)
 
     session = create_session()
@@ -335,7 +325,7 @@ def watch_and_download(target_date: str, send_mail: bool, retry_interval: int = 
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for attempt in range(1, max_retries + 1):
-        print(f"\n  --- Intento {attempt}/{max_retries} - {datetime.now().strftime('%H:%M:%S')} ---")
+        print(f"\n  --- Intento {attempt}/{max_retries} - {now_sv().strftime('%H:%M:%S')} (hora SV) ---")
 
         files = list_files(session, limit=50)
         filenames = [f["filename"] for f in files]
@@ -348,10 +338,10 @@ def watch_and_download(target_date: str, send_mail: bool, retry_interval: int = 
             if result:
                 if send_mail:
                     print()
-                    send_email(result)
+                    send_email(result, target_date)
 
                 print(f"\n{'=' * 60}")
-                print(f"  COMPLETADO - {datetime.now().strftime('%H:%M:%S')}")
+                print(f"  COMPLETADO - {now_sv().strftime('%H:%M:%S')} (hora SV)")
                 print(f"{'=' * 60}")
                 return True
         else:
@@ -360,8 +350,8 @@ def watch_and_download(target_date: str, send_mail: bool, retry_interval: int = 
             print(f"  Mas recientes: {', '.join(recent)}")
 
         if attempt < max_retries:
-            next_t = (datetime.now() + timedelta(seconds=retry_interval)).strftime('%H:%M:%S')
-            print(f"  [ESPERAR] Proximo intento a las {next_t}...")
+            next_t = (now_sv() + timedelta(seconds=retry_interval)).strftime('%H:%M:%S')
+            print(f"  [ESPERAR] Proximo intento a las {next_t} (hora SV)...")
             time.sleep(retry_interval)
 
     print(f"\n{'=' * 60}")
@@ -412,7 +402,7 @@ def main():
     print("=" * 60)
     print("  EOR - PREDESPACHO EL SALVADOR")
     print("=" * 60)
-    print(f"  Fecha:   {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  Fecha:   {now_sv().strftime('%Y-%m-%d %H:%M:%S')} (hora SV)")
     print("=" * 60)
 
     session = create_session()
@@ -434,24 +424,26 @@ def main():
     if args.list_only:
         return
 
-    # Descargar
     output_dir = Path(args.output) if args.output else SCRIPT_DIR / "eor_predespacho"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.date:
-        # Descargar fecha especifica
         target = build_expected_filename(args.date)
         print(f"\n  [DESCARGAR] {target}")
         result = download_file(session, target, output_dir, args.overwrite)
         if result and args.email:
-            send_email(result)
+            send_email(result, args.date)
     else:
-        # Descargar el mas reciente
         latest = files[0]
         print(f"\n  [DESCARGAR] {latest['filename']} (mas reciente)")
         result = download_file(session, latest["filename"], output_dir, args.overwrite)
         if result and args.email:
-            send_email(result)
+            try:
+                date_part = latest["filename"].replace(FILE_PREFIX, "").replace(FILE_SUFFIX, "")
+                file_date = datetime.strptime(date_part, "%Y%m%d").strftime("%Y-%m-%d")
+            except ValueError:
+                file_date = None
+            send_email(result, file_date)
 
     print(f"\n{'=' * 60}")
 
