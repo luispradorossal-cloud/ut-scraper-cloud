@@ -399,7 +399,7 @@ def main():
         return
 
     if args.watch:
-        target = args.watch_date or get_today_date()
+        target = args.watch_date or os.environ.get("TARGET_DATE") or get_today_date()
         watch_and_download(
             target_date=target,
             send_mail=args.email,

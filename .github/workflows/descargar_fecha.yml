@@ -1,0 +1,63 @@
+name: Descargar por Fecha
+
+on:
+  workflow_dispatch:
+    inputs:
+      fecha:
+        description: 'Fecha a descargar (YYYY-MM-DD)'
+        required: true
+        type: string
+
+jobs:
+  ut-aislado:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Descargar UT Aislado
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
+          TIPO: aislado
+          TARGET_DATE: ${{ inputs.fecha }}
+        run: python scraper.py
+
+  ut-prog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Descargar UT Prog Diaria
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
+          TIPO: prog
+          TARGET_DATE: ${{ inputs.fecha }}
+        run: python scraper.py
+
+  eor-predespacho:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Descargar EOR Predespacho
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
+          TARGET_DATE: ${{ inputs.fecha }}
+        run: python eor_scraper.py --watch-date ${{ inputs.fecha }} --email --max-retries 1

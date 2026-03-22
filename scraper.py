@@ -162,30 +162,41 @@ def download_file(session, filename, year, output_dir):
         return None
 
 
-def get_tomorrow_filename(tipo: str) -> str:
-    tomorrow = datetime.now() + timedelta(days=1)
-    ddmmyy = tomorrow.strftime("%d%m%y")
-    if tipo == "aislado":
-        return f"Prog_Diaria_Inicial_Aislado_{ddmmyy}.xlsx"
+def get_target_filename(tipo: str, target_date=None) -> tuple:
+    """Genera nombre de archivo y ano para la fecha objetivo.
+    Si TARGET_DATE env var esta definida (YYYY-MM-DD), usa esa fecha.
+    Si no, usa manana."""
+    if target_date:
+        dt = datetime.strptime(target_date, "%Y-%m-%d")
     else:
-        return f"Prog_Diaria{ddmmyy}.xlsx"
+        dt = datetime.now() + timedelta(days=1)
+    ddmmyy = dt.strftime("%d%m%y")
+    year = str(dt.year)
+    if tipo == "aislado":
+        return f"Prog_Diaria_Inicial_Aislado_{ddmmyy}.xlsx", year, dt.strftime("%Y-%m-%d")
+    else:
+        return f"Prog_Diaria{ddmmyy}.xlsx", year, dt.strftime("%Y-%m-%d")
 
 
 # --- Main ---------------------------------------------------------------------
 
 def main():
     tipo = os.environ.get("TIPO", "aislado")
-    expected_file = get_tomorrow_filename(tipo)
-    tomorrow = datetime.now() + timedelta(days=1)
-    year = str(tomorrow.year)
+    target_date = os.environ.get("TARGET_DATE")  # opcional: YYYY-MM-DD
+    expected_file, year, date_str = get_target_filename(tipo, target_date)
+
+    # Si se especifico fecha, no reintentar (el archivo ya deberia existir)
+    max_retries = 1 if target_date else MAX_RETRIES
+    retry_interval = 30 if target_date else RETRY_INTERVAL
 
     print("=" * 60)
     print("  UT EL SALVADOR - GITHUB ACTIONS")
     print("=" * 60)
     print(f"  Tipo:             {'Aislado' if tipo == 'aislado' else 'Prog_Diaria'}")
     print(f"  Archivo esperado: {expected_file}")
+    print(f"  Fecha objetivo:   {date_str}")
     print(f"  Carpeta ano:      {year}")
-    print(f"  Reintentos:       cada {RETRY_INTERVAL // 60} min, max {MAX_RETRIES}")
+    print(f"  Reintentos:       cada {retry_interval // 60} min, max {max_retries}")
     print(f"  Inicio:           {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
 
@@ -193,8 +204,8 @@ def main():
     output_dir = Path("downloads")
     output_dir.mkdir(exist_ok=True)
 
-    for attempt in range(1, MAX_RETRIES + 1):
-        print(f"\n  --- Intento {attempt}/{MAX_RETRIES} - {datetime.now().strftime('%H:%M:%S')} ---")
+    for attempt in range(1, max_retries + 1):
+        print(f"\n  --- Intento {attempt}/{max_retries} - {datetime.now().strftime('%H:%M:%S')} ---")
 
         files = list_files(session, year)
         print(f"  [BUSCAR] {len(files)} archivos en carpeta {year}")
@@ -216,12 +227,12 @@ def main():
             print(f"  [NO ENCONTRADO] {expected_file}")
             print(f"  Mas recientes: {', '.join(recent)}")
 
-        if attempt < MAX_RETRIES:
-            next_t = (datetime.now() + timedelta(seconds=RETRY_INTERVAL)).strftime('%H:%M:%S')
+        if attempt < max_retries:
+            next_t = (datetime.now() + timedelta(seconds=retry_interval)).strftime('%H:%M:%S')
             print(f"  [ESPERAR] Proximo intento a las {next_t}...")
-            time.sleep(RETRY_INTERVAL)
+            time.sleep(retry_interval)
 
-    print(f"\n  TIMEOUT - No se encontro {expected_file} despues de {MAX_RETRIES} intentos")
+    print(f"\n  TIMEOUT - No se encontro {expected_file} despues de {max_retries} intentos")
     sys.exit(1)
 
 

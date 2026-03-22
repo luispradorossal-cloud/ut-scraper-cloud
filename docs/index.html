@@ -240,6 +240,73 @@
 
         .help-text a { color: #3b82f6; text-decoration: none; }
         .help-text a:hover { text-decoration: underline; }
+
+        /* Date section */
+        .date-section {
+            margin-bottom: 16px;
+        }
+
+        .date-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .date-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 14px;
+        }
+
+        .date-form {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .date-form label {
+            font-size: 14px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .date-form input[type="date"] {
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #e2e8f0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .date-form input[type="date"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .btn-date {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-date:hover { opacity: 0.9; }
+        .btn-date:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
+        .date-status {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -331,6 +398,25 @@
             <div class="last-run" id="lastrun-eor"></div>
         </div>
 
+    </div>
+
+    <!-- Descarga por fecha -->
+    <div class="actions-bar" style="margin-top: 28px;">
+        <h2>Descarga por Fecha</h2>
+    </div>
+
+    <div class="date-section">
+        <div class="date-card">
+            <p class="date-desc">Descarga los 3 documentos de una fecha especifica y los envia por correo.</p>
+            <div class="date-form">
+                <label for="fechaInput">Fecha:</label>
+                <input type="date" id="fechaInput">
+                <button class="btn-date" id="btn-fecha" onclick="runByDate()">
+                    Descargar y enviar
+                </button>
+            </div>
+            <div class="date-status" id="date-status"></div>
+        </div>
     </div>
 
     <p class="help-text">
@@ -487,8 +573,49 @@ function refreshAll() {
     Object.keys(WORKFLOWS).forEach(fetchStatus);
 }
 
+async function runByDate() {
+    const fechaInput = document.getElementById('fechaInput');
+    const btn = document.getElementById('btn-fecha');
+    const status = document.getElementById('date-status');
+
+    const fecha = fechaInput.value;
+    if (!fecha) {
+        alert('Selecciona una fecha');
+        return;
+    }
+
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+    status.textContent = 'Disparando los 3 scrapers para ' + fecha + '...';
+    status.style.color = '#fdba74';
+
+    const result = await ghApi(
+        'repos/' + REPO + '/actions/workflows/descargar_fecha.yml/dispatches',
+        'POST',
+        { ref: 'master', inputs: { fecha: fecha } }
+    );
+
+    if (result) {
+        status.innerHTML = 'Ejecutando los 3 scrapers para <strong>' + fecha + '</strong>. Los archivos llegaran a tu correo.';
+        status.style.color = '#86efac';
+        btn.textContent = 'Enviado!';
+        setTimeout(function() {
+            btn.textContent = 'Descargar y enviar';
+            btn.disabled = false;
+        }, 5000);
+    } else {
+        status.textContent = 'Error al ejecutar. Verifica tu token.';
+        status.style.color = '#fca5a5';
+        btn.textContent = 'Descargar y enviar';
+        btn.disabled = false;
+    }
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', function() {
+    // Set default date to today
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('fechaInput').value = today;
     const token = getToken();
     if (token) {
         updateTokenStatus(true);
