@@ -765,7 +765,7 @@ async function saveDestinatarios() {
     try {
         if (!window._sodiumReady) {
             status.textContent = 'Cargando encriptacion...';
-            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers-sumo/0.7.15/sodium-sumo.min.js');
+            await loadScript('https://cdn.jsdelivr.net/npm/libsodium-wrappers-sumo@0.7.15/dist/modules-sumo/libsodium-wrappers.js');
             await window.sodium.ready;
             window._sodiumReady = true;
         }
