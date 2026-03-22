@@ -2,8 +2,8 @@ name: UT Scraper - Aislado
 
 on:
   schedule:
-    # 11:30 AM hora El Salvador (CST = UTC-6) => 17:30 UTC
-    - cron: '30 17 * * *'
+    # 11:35 AM hora El Salvador (CST = UTC-6) => 17:35 UTC
+    - cron: '35 17 * * *'
   workflow_dispatch:
     # Permite ejecutar manualmente desde GitHub
 
