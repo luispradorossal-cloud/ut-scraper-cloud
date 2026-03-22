@@ -761,19 +761,20 @@ async function saveDestinatarios() {
         return;
     }
 
-    // Encrypt the secret using libsodium (loaded from CDN)
+    // Encrypt using libsodium-wrappers
     try {
-        if (typeof sodium === 'undefined') {
-            // Load libsodium
+        if (!window._sodiumReady) {
             status.textContent = 'Cargando encriptacion...';
-            await loadScript('https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.13/dist/modules/sumo/sodium-sumo.min.js');
-            await sodium.ready;
+            await loadScript('https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/sumo/sodium-sumo.min.js');
+            await window.sodium.ready;
+            window._sodiumReady = true;
         }
 
-        var keyBytes = Uint8Array.from(atob(keyData.key), function(c) { return c.charCodeAt(0); });
-        var messageBytes = new TextEncoder().encode(emailStr);
-        var encryptedBytes = sodium.crypto_box_seal(messageBytes, keyBytes);
-        var encryptedBase64 = btoa(String.fromCharCode.apply(null, encryptedBytes));
+        var _sodium = window.sodium;
+        var keyBytes = _sodium.from_base64(keyData.key, _sodium.base64_variants.ORIGINAL);
+        var messageBytes = _sodium.from_string(emailStr);
+        var encryptedBytes = _sodium.crypto_box_seal(messageBytes, keyBytes);
+        var encryptedBase64 = _sodium.to_base64(encryptedBytes, _sodium.base64_variants.ORIGINAL);
 
         var result = await ghApi('repos/' + REPO + '/actions/secrets/DEST_EMAIL', 'PUT', {
             encrypted_value: encryptedBase64,
