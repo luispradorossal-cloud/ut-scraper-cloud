@@ -4,7 +4,8 @@ on:
   schedule:
     # 5:00 PM hora El Salvador (CST = UTC-6) => 23:00 UTC
     - cron: '0 23 * * *'
-  workflow_dispatch: # Permite ejecutar manualmente desde GitHub
+  workflow_dispatch:
+    # Permite ejecutar manualmente desde GitHub
 
 jobs:
   scraper:
