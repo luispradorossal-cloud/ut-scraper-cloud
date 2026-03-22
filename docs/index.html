@@ -362,6 +362,51 @@
         }
 
         .btn-save-dest:hover { background: #2563eb; }
+
+        /* Log table */
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .log-table thead {
+            background: #0f172a;
+        }
+
+        .log-table th {
+            padding: 10px 14px;
+            text-align: left;
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .log-table td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        .log-table tbody tr:hover {
+            background: #1a2332;
+        }
+
+        .log-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .badge-success { background: #14532d; color: #86efac; }
+        .badge-failed { background: #7f1d1d; color: #fca5a5; }
+        .badge-running { background: #422006; color: #fdba74; }
+        .badge-manual { background: #1e3a5f; color: #93c5fd; }
+        .badge-schedule { background: #3b0764; color: #d8b4fe; }
     </style>
 </head>
 <body>
@@ -499,6 +544,31 @@
                 <button class="btn-save-dest" onclick="saveDestinatarios()">Guardar cambios</button>
                 <span id="dest-status" style="font-size:12px; color:#64748b;"></span>
             </div>
+        </div>
+    </div>
+
+    <!-- Log de Actividades -->
+    <div class="actions-bar" style="margin-top: 28px;">
+        <h2>Log de Actividades</h2>
+        <button class="btn-refresh" onclick="loadLogs()">Actualizar log</button>
+    </div>
+
+    <div class="date-section">
+        <div class="date-card" style="padding: 0; overflow: hidden;">
+            <table class="log-table" id="log-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Workflow</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Duracion</th>
+                    </tr>
+                </thead>
+                <tbody id="log-body">
+                    <tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Cargando...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -696,6 +766,77 @@ async function runByDate() {
     }
 }
 
+// --- Log de Actividades ---
+async function loadLogs() {
+    var body = document.getElementById('log-body');
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Cargando...</td></tr>';
+
+    if (!getToken()) return;
+
+    var data = await ghApi('repos/' + REPO + '/actions/runs?per_page=30');
+    if (!data || !data.workflow_runs) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">No se pudo cargar</td></tr>';
+        return;
+    }
+
+    var runs = data.workflow_runs.filter(function(r) {
+        return r.name !== 'pages-build-deployment' && r.name !== 'Actualizar Destinatarios';
+    });
+
+    if (runs.length === 0) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Sin actividades</td></tr>';
+        return;
+    }
+
+    var html = '';
+    runs.forEach(function(run) {
+        var d = new Date(run.created_at);
+        var fecha = d.toLocaleDateString('es-SV', { day:'2-digit', month:'2-digit', year:'numeric' });
+        var hora = d.toLocaleTimeString('es-SV', { hour:'2-digit', minute:'2-digit' });
+
+        // Estado
+        var estadoBadge = '';
+        if (run.status === 'in_progress' || run.status === 'queued') {
+            estadoBadge = '<span class="log-badge badge-running">En curso</span>';
+        } else if (run.conclusion === 'success') {
+            estadoBadge = '<span class="log-badge badge-success">Exitoso</span>';
+        } else if (run.conclusion === 'failure') {
+            estadoBadge = '<span class="log-badge badge-failed">Fallido</span>';
+        } else {
+            estadoBadge = '<span class="log-badge" style="background:#334155;color:#94a3b8;">' + (run.conclusion || run.status) + '</span>';
+        }
+
+        // Tipo (manual o automatico)
+        var tipoBadge = '';
+        if (run.event === 'workflow_dispatch') {
+            tipoBadge = '<span class="log-badge badge-manual">Manual</span>';
+        } else if (run.event === 'schedule') {
+            tipoBadge = '<span class="log-badge badge-schedule">Automatico</span>';
+        } else {
+            tipoBadge = '<span class="log-badge" style="background:#334155;color:#94a3b8;">' + run.event + '</span>';
+        }
+
+        // Duracion
+        var duracion = '';
+        if (run.updated_at && run.created_at) {
+            var ms = new Date(run.updated_at) - new Date(run.created_at);
+            var mins = Math.floor(ms / 60000);
+            var secs = Math.floor((ms % 60000) / 1000);
+            duracion = mins > 0 ? mins + 'm ' + secs + 's' : secs + 's';
+        }
+
+        html += '<tr>' +
+            '<td>' + fecha + ' ' + hora + '</td>' +
+            '<td>' + run.name + '</td>' +
+            '<td>' + tipoBadge + '</td>' +
+            '<td>' + estadoBadge + '</td>' +
+            '<td>' + duracion + '</td>' +
+            '</tr>';
+    });
+
+    body.innerHTML = html;
+}
+
 // --- Destinatarios ---
 function getDestinatarios() {
     var saved = localStorage.getItem('destinatarios');
@@ -807,6 +948,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (token) {
         updateTokenStatus(true);
         refreshAll();
+        loadLogs();
     }
 });
 </script>
