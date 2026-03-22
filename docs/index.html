@@ -307,6 +307,61 @@
             font-size: 13px;
             color: #94a3b8;
         }
+
+        /* Destinatarios */
+        .dest-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 20px;
+            padding: 5px 12px;
+            margin: 3px 4px;
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .dest-chip .dest-remove {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 0 2px;
+            line-height: 1;
+        }
+
+        .dest-chip .dest-remove:hover { color: #fca5a5; }
+
+        .btn-small {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: #166534;
+            color: #86efac;
+        }
+
+        .btn-add:hover { background: #14532d; }
+
+        .btn-save-dest {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-save-dest:hover { background: #2563eb; }
     </style>
 </head>
 <body>
@@ -420,6 +475,30 @@
                 </button>
             </div>
             <div class="date-status" id="date-status"></div>
+        </div>
+    </div>
+
+    <!-- Destinatarios -->
+    <div class="actions-bar" style="margin-top: 28px;">
+        <h2>Destinatarios</h2>
+    </div>
+
+    <div class="date-section">
+        <div class="date-card">
+            <p class="date-desc">Administra los correos que reciben los documentos de los flujos automaticos diarios (Aislado 11:35 AM, Prog Diaria 5:00 PM, Predespacho 2:35 PM).</p>
+
+            <div id="dest-list" style="margin-bottom: 14px;"></div>
+
+            <div class="date-form">
+                <label for="newDestEmail">Agregar:</label>
+                <input type="email" id="newDestEmail" placeholder="nuevo@correo.com" style="flex:1; background:#0f172a; border:1px solid #475569; border-radius:6px; padding:8px 12px; color:#e2e8f0; font-size:14px;">
+                <button class="btn-small btn-add" onclick="addDestinatario()">+ Agregar</button>
+            </div>
+
+            <div style="margin-top: 14px; display:flex; gap:10px; align-items:center;">
+                <button class="btn-save-dest" onclick="saveDestinatarios()">Guardar cambios</button>
+                <span id="dest-status" style="font-size:12px; color:#64748b;"></span>
+            </div>
         </div>
     </div>
 
@@ -617,6 +696,114 @@ async function runByDate() {
     }
 }
 
+// --- Destinatarios ---
+function getDestinatarios() {
+    var saved = localStorage.getItem('destinatarios');
+    if (saved) return JSON.parse(saved);
+    return ['luis.prado.rossal@gmail.com'];
+}
+
+function setDestinatarios(list) {
+    localStorage.setItem('destinatarios', JSON.stringify(list));
+}
+
+function renderDestinatarios() {
+    var list = getDestinatarios();
+    var container = document.getElementById('dest-list');
+    if (list.length === 0) {
+        container.innerHTML = '<span style="font-size:13px; color:#64748b;">Sin destinatarios configurados</span>';
+        return;
+    }
+    container.innerHTML = list.map(function(email, i) {
+        return '<span class="dest-chip">' + email +
+            ' <button class="dest-remove" onclick="removeDestinatario(' + i + ')">&times;</button></span>';
+    }).join('');
+}
+
+function addDestinatario() {
+    var input = document.getElementById('newDestEmail');
+    var email = input.value.trim();
+    if (!email || !email.includes('@')) { alert('Ingresa un correo valido'); return; }
+    var list = getDestinatarios();
+    if (list.includes(email)) { alert('Este correo ya esta en la lista'); return; }
+    list.push(email);
+    setDestinatarios(list);
+    renderDestinatarios();
+    input.value = '';
+}
+
+function removeDestinatario(index) {
+    var list = getDestinatarios();
+    list.splice(index, 1);
+    setDestinatarios(list);
+    renderDestinatarios();
+}
+
+async function saveDestinatarios() {
+    var list = getDestinatarios();
+    var status = document.getElementById('dest-status');
+
+    if (list.length === 0) {
+        alert('Agrega al menos un destinatario');
+        return;
+    }
+
+    var emailStr = list.join(',');
+    status.textContent = 'Guardando...';
+    status.style.color = '#fdba74';
+
+    // Update DEST_EMAIL secret via GitHub API
+    // First get the repo public key for encryption
+    var keyData = await ghApi('repos/' + REPO + '/actions/secrets/public-key');
+    if (!keyData) {
+        status.textContent = 'Error al obtener clave publica';
+        status.style.color = '#fca5a5';
+        return;
+    }
+
+    // Encrypt the secret using libsodium (loaded from CDN)
+    try {
+        if (typeof sodium === 'undefined') {
+            // Load libsodium
+            status.textContent = 'Cargando encriptacion...';
+            await loadScript('https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.13/dist/modules/sumo/sodium-sumo.min.js');
+            await sodium.ready;
+        }
+
+        var keyBytes = Uint8Array.from(atob(keyData.key), function(c) { return c.charCodeAt(0); });
+        var messageBytes = new TextEncoder().encode(emailStr);
+        var encryptedBytes = sodium.crypto_box_seal(messageBytes, keyBytes);
+        var encryptedBase64 = btoa(String.fromCharCode.apply(null, encryptedBytes));
+
+        var result = await ghApi('repos/' + REPO + '/actions/secrets/DEST_EMAIL', 'PUT', {
+            encrypted_value: encryptedBase64,
+            key_id: keyData.key_id
+        });
+
+        if (result) {
+            status.textContent = 'Guardado! Los flujos automaticos enviaran a: ' + list.join(', ');
+            status.style.color = '#86efac';
+        } else {
+            status.textContent = 'Error al guardar';
+            status.style.color = '#fca5a5';
+        }
+    } catch (e) {
+        console.error('Encryption error:', e);
+        status.textContent = 'Error de encriptacion: ' + e.message;
+        status.style.color = '#fca5a5';
+    }
+}
+
+function loadScript(src) {
+    return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', function() {
     // Set default date to today
@@ -625,7 +812,9 @@ window.addEventListener('DOMContentLoaded', function() {
     // Pre-fill email from localStorage
     var savedEmail = localStorage.getItem('dest_email') || 'luis.prado.rossal@gmail.com';
     document.getElementById('correoInput').value = savedEmail;
-    const token = getToken();
+    // Render destinatarios
+    renderDestinatarios();
+    var token = getToken();
     if (token) {
         updateTokenStatus(true);
         refreshAll();

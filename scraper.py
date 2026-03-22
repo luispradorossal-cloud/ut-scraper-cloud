@@ -54,14 +54,14 @@ MAX_RETRIES = 6       # 30 minutos total
 def send_email(filepath: Path, tipo: str):
     gmail_user = os.environ["GMAIL_USER"]
     gmail_pass = os.environ["GMAIL_PASS"]
-    dest_email = os.environ["DEST_EMAIL"]
+    dest_email = os.environ["DEST_EMAIL"]  # soporta multiples separados por coma
 
     now = datetime.now()
     tipo_nombre = "Prog_Diaria_Inicial_Aislado" if tipo == "aislado" else "Prog_Diaria"
 
     msg = email.mime.multipart.MIMEMultipart()
     msg["From"] = gmail_user
-    msg["To"] = dest_email
+    msg["To"] = dest_email  # Gmail acepta "a@x.com,b@x.com"
     msg["Subject"] = f"UT - {tipo_nombre} - {now.strftime('%d/%m/%Y')}"
 
     body = (
