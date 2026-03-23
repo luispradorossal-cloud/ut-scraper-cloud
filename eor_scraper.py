@@ -100,6 +100,10 @@ def get_today_date() -> str:
     return now_sv().strftime("%Y-%m-%d")
 
 
+def get_tomorrow_date() -> str:
+    return (now_sv() + timedelta(days=1)).strftime("%Y-%m-%d")
+
+
 # --- Correo -------------------------------------------------------------------
 
 def load_config() -> dict:
@@ -389,7 +393,7 @@ def main():
         return
 
     if args.watch:
-        target = args.watch_date or os.environ.get("TARGET_DATE") or get_today_date()
+        target = args.watch_date or os.environ.get("TARGET_DATE") or get_tomorrow_date()
         watch_and_download(
             target_date=target,
             send_mail=args.email,
