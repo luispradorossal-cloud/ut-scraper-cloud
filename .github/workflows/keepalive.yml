@@ -1,0 +1,21 @@
+name: Keepalive
+
+on:
+  schedule:
+    # Corre cada 50 dias para mantener el repo activo
+    # GitHub desactiva cron schedules despues de 60 dias sin actividad
+    - cron: '0 12 */50 * *'
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Keepalive commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: keepalive para mantener workflows activos"
+          git push
