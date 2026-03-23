@@ -2,10 +2,9 @@ name: EOR Scraper - Predespacho SV
 
 on:
   schedule:
-    # 2:35 PM hora El Salvador (CST = UTC-6) => 20:35 UTC
-    - cron: '35 20 * * *'
+    # 2:29 PM hora El Salvador (CST = UTC-6) => 20:29 UTC
+    - cron: '29 20 * * *'
   workflow_dispatch:
-    # Permite ejecutar manualmente desde GitHub
 
 jobs:
   scraper:
