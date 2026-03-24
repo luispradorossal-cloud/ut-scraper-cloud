@@ -2,8 +2,8 @@ name: UT Scraper - Prog Diaria
 
 on:
   schedule:
-    # 5:29 PM hora El Salvador (CST = UTC-6) => 23:29 UTC
-    - cron: '29 23 * * *'
+    # 5:25 PM hora El Salvador (CST = UTC-6) => 23:29 UTC
+    - cron: '25 23 * * *'
   workflow_dispatch:
 
 jobs:
