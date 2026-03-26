@@ -15,6 +15,7 @@ import email.mime.base
 import email.mime.multipart
 import email.mime.text
 import os
+import re
 import smtplib
 import sys
 import time
@@ -57,9 +58,24 @@ def now_sv():
     return datetime.now(TZ_SV)
 
 
+def extract_date_from_filename(filename):
+    """Extrae la fecha DDMMYY del nombre del archivo y retorna DD/MM/YYYY.
+    Ej: Prog_Diaria_Inicial_Aislado_260326.xlsx -> 26/03/2026
+    Ej: Prog_Diaria260326.xlsx -> 26/03/2026"""
+    match = re.search(r'(\d{6})\.xlsx$', filename)
+    if match:
+        ddmmyy = match.group(1)
+        try:
+            dt = datetime.strptime(ddmmyy, "%d%m%y")
+            return dt.strftime("%d/%m/%Y")
+        except ValueError:
+            pass
+    return None
+
+
 # --- Email --------------------------------------------------------------------
 
-def send_email(filepath: Path, tipo: str, target_date_str: str = None):
+def send_email(filepath, tipo, target_date_str=None):
     gmail_user = os.environ["GMAIL_USER"]
     gmail_pass = os.environ["GMAIL_PASS"]
     dest_email = os.environ["DEST_EMAIL"]
@@ -67,11 +83,18 @@ def send_email(filepath: Path, tipo: str, target_date_str: str = None):
     ahora = now_sv()
     tipo_nombre = "Prog_Diaria_Inicial_Aislado" if tipo == "aislado" else "Prog_Diaria"
 
-    if target_date_str:
-        dt = datetime.strptime(target_date_str, "%Y-%m-%d")
-        fecha_archivo = dt.strftime("%d/%m/%Y")
-    else:
+    # Prioridad: fecha del nombre del archivo > target_date_str > fecha actual
+    fecha_archivo = extract_date_from_filename(filepath.name)
+    if not fecha_archivo and target_date_str:
+        try:
+            dt = datetime.strptime(target_date_str, "%Y-%m-%d")
+            fecha_archivo = dt.strftime("%d/%m/%Y")
+        except ValueError:
+            fecha_archivo = None
+    if not fecha_archivo:
         fecha_archivo = ahora.strftime("%d/%m/%Y")
+
+    print(f"  [CORREO] Fecha extraida del archivo: {fecha_archivo} (de: {filepath.name})")
 
     msg = email.mime.multipart.MIMEMultipart()
     msg["From"] = gmail_user
@@ -82,7 +105,7 @@ def send_email(filepath: Path, tipo: str, target_date_str: str = None):
         f"Programacion Diaria - UT El Salvador\n"
         f"{'=' * 45}\n\n"
         f"Tipo: {tipo_nombre}\n"
-        f"Fecha: {fecha_archivo}\n"
+        f"Fecha del reporte: {fecha_archivo}\n"
         f"Hora de descarga: {ahora.strftime('%H:%M')} (hora SV)\n"
         f"Archivo: {filepath.name} ({filepath.stat().st_size / 1024:.0f} KB)\n\n"
         f"---\n"
@@ -107,7 +130,7 @@ def send_email(filepath: Path, tipo: str, target_date_str: str = None):
 
 # --- Scraping -----------------------------------------------------------------
 
-def create_session() -> requests.Session:
+def create_session():
     session = requests.Session()
     session.headers.update({
         "User-Agent": (
@@ -122,7 +145,7 @@ def create_session() -> requests.Session:
     return session
 
 
-def list_files(session: requests.Session, year: str) -> list:
+def list_files(session, year):
     try:
         session.get(BASE_URL, timeout=30)
     except requests.RequestException:
@@ -176,7 +199,7 @@ def download_file(session, filename, year, output_dir):
         return None
 
 
-def get_target_filename(tipo: str, target_date=None) -> tuple:
+def get_target_filename(tipo, target_date=None):
     """Genera nombre de archivo y ano para la fecha objetivo.
     Si TARGET_DATE env var esta definida (YYYY-MM-DD), usa esa fecha.
     Si no, usa manana (hora de El Salvador)."""
