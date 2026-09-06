@@ -1,10 +1,14 @@
 name: Keepalive
 
+permissions:
+  contents: write
+
 on:
   schedule:
-    # Corre cada 50 dias para mantener el repo activo
+    # Corre el dia 1 de cada mes para mantener el repo activo
     # GitHub desactiva cron schedules despues de 60 dias sin actividad
     - cron: '0 12 */50 * *'
+  workflow_dispatch:
 
 jobs:
   keepalive:
