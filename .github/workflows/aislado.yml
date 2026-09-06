@@ -2,7 +2,7 @@ name: UT Scraper - Aislado
 
 on:
   schedule:
-    # 11:25 AM hora El Salvador (CST = UTC-6) => 17:29 UTC
+    # 11:25 AM hora El Salvador (CST = UTC-6) => 17:25 UTC
     - cron: '25 17 * * *'
   workflow_dispatch:
 
@@ -30,3 +30,11 @@ jobs:
           DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
           TIPO: aislado
         run: python scraper.py
+
+      - name: Oferta revisada
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
+          DESCUENTO: '0.085'
+        run: python oferta_revisada.py
