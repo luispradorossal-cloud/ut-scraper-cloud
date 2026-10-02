@@ -95,26 +95,16 @@ def extract(content, d, tipo, fname):
 
 def main():
     s = create_session()
-    years = range(START.year, END.year + 1)
-    best = {}  # (date, tipo) -> (suffix, fname, folder)
-    for y in years:
-        for f in list_files(s, str(y)):
-            for tipo, rx in RX.items():
-                m = rx.match(f)
-                if not m:
-                    continue
-                dd = m.group(1)
-                try:
-                    d = date(2000 + int(dd[4:6]), int(dd[2:4]), int(dd[0:2]))
-                except ValueError:
-                    continue
-                if not (START <= d <= END):
-                    continue
-                suf = int(m.group(2) or 0)
-                k = (d, tipo)
-                if k not in best or suf > best[k][0]:
-                    best[k] = (suf, f, str(y))
-        print(f"año {y}: acumulado {len(best)} archivos objetivo")
+    # El listado público solo muestra ~100 días; los archivos viejos se piden por nombre.
+    s.get(BASE_URL, timeout=30)
+    best = {}
+    d = START
+    while d <= END:
+        ddmmyy = d.strftime("%d%m%y")
+        best[(d, "A")] = (0, f"Prog_Diaria_Inicial_Aislado_{ddmmyy}.xlsx", str(d.year))
+        best[(d, "F")] = (0, f"Prog_Diaria{ddmmyy}.xlsx", str(d.year))
+        d += timedelta(days=1)
+    print(f"objetivo: {len(best)} archivos")
     writers, handles = {}, {}
     man = open(OUT / "manifest.csv", "w", newline="")
     mw = csv.writer(man); mw.writerow(["fecha", "tipo", "archivo", "carpeta", "estado", "filas"])
@@ -133,6 +123,8 @@ def main():
         for r in rows:
             writers[d.year].writerow(r)
         mw.writerow([d, tipo, fname, folder, "ok", len(rows)])
+        if i % 100 == 0:
+            handles_flush = [h.flush() for h in handles.values()]; man.flush()
         if i % 50 == 0:
             print(f"  {i}/{len(best)} {fname}"); sys.stdout.flush()
         time.sleep(0.3)
