@@ -24,7 +24,7 @@ jobs:
       - name: Descargar y extraer
         run: |
           python historico_debug.py
-          python historico.py
+          echo skip
       - name: Guardar CSV en la rama
         run: |
           git config user.name "github-actions[bot]"
