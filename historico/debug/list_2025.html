@@ -1,0 +1,3284 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="raiz-item" dir="ltr" lang="es-ES">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unidad de Transacciones</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+
+
+
+
+
+
+
+
+
+
+
+
+<link data-senna-track="temporary" href="https://www.ut.com.sv" rel="canonical" />
+<link data-senna-track="temporary" href="https://www.ut.com.sv" hreflang="es-ES" rel="alternate" />
+<link data-senna-track="temporary" href="https://www.ut.com.sv/en/" hreflang="en-US" rel="alternate" />
+<link data-senna-track="temporary" href="https://www.ut.com.sv" hreflang="x-default" rel="alternate" />
+
+<meta property="og:locale" content="es_ES">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:site_name" content="UT">
+<meta property="og:title" content="Programación diaria - UT">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ut.com.sv">
+
+
+<link href="https://www.ut.com.sv/o/ut-theme-2020/images/favicon.ico" rel="icon" />
+
+
+
+<link class="lfr-css-file" data-senna-track="temporary" href="https://www.ut.com.sv/o/ut-theme-2020/css/clay.css?browserId=chrome&amp;themeId=uttheme2020_WAR_uttheme2020&amp;minifierType=css&amp;languageId=es_ES&amp;b=7310&amp;t=1636345660000" id="liferayAUICSS" rel="stylesheet" type="text/css" />
+
+
+
+<link data-senna-track="temporary" href="/o/frontend-css-web/main.css?browserId=chrome&amp;themeId=uttheme2020_WAR_uttheme2020&amp;minifierType=css&amp;languageId=es_ES&amp;b=7310&amp;t=1614815165756" id="liferayPortalCSS" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+	
+
+
+
+	
+
+		<link data-senna-track="temporary" href="/combo?browserId=chrome&amp;minifierType=&amp;themeId=uttheme2020_WAR_uttheme2020&amp;languageId=es_ES&amp;b=7310&amp;ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7:%2Fcss%2FprogramacionDownload.css&amp;com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_4231:%2Fcss%2Fmain.css&amp;com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426:%2Fcss%2Fmain.css&amp;com_liferay_product_navigation_product_menu_web_portlet_ProductMenuPortlet:%2Fcss%2Fmain.css&amp;com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u:%2Fcss%2Fmain.css&amp;t=1645764970000" id="cf176be6" rel="stylesheet" type="text/css" />
+
+	
+
+
+
+
+
+
+
+<script data-senna-track="temporary" type="text/javascript">
+	// <![CDATA[
+		var Liferay = Liferay || {};
+
+		Liferay.Browser = {
+			acceptsGzip: function() {
+				return true;
+			},
+
+			
+
+			getMajorVersion: function() {
+				return 120.0;
+			},
+
+			getRevision: function() {
+				return '537.36';
+			},
+			getVersion: function() {
+				return '120.0';
+			},
+
+			
+
+			isAir: function() {
+				return false;
+			},
+			isChrome: function() {
+				return true;
+			},
+			isEdge: function() {
+				return false;
+			},
+			isFirefox: function() {
+				return false;
+			},
+			isGecko: function() {
+				return true;
+			},
+			isIe: function() {
+				return false;
+			},
+			isIphone: function() {
+				return false;
+			},
+			isLinux: function() {
+				return false;
+			},
+			isMac: function() {
+				return false;
+			},
+			isMobile: function() {
+				return false;
+			},
+			isMozilla: function() {
+				return false;
+			},
+			isOpera: function() {
+				return false;
+			},
+			isRtf: function() {
+				return true;
+			},
+			isSafari: function() {
+				return true;
+			},
+			isSun: function() {
+				return false;
+			},
+			isWebKit: function() {
+				return true;
+			},
+			isWindows: function() {
+				return true;
+			}
+		};
+
+		Liferay.Data = Liferay.Data || {};
+
+		Liferay.Data.ICONS_INLINE_SVG = true;
+
+		Liferay.Data.NAV_SELECTOR = '#navigation';
+
+		Liferay.Data.NAV_SELECTOR_MOBILE = '#navigationCollapse';
+
+		Liferay.Data.isCustomizationView = function() {
+			return false;
+		};
+
+		Liferay.Data.notices = [
+			
+
+			
+		];
+
+		Liferay.PortletKeys = {
+			DOCUMENT_LIBRARY: 'com_liferay_document_library_web_portlet_DLPortlet',
+			DYNAMIC_DATA_MAPPING: 'com_liferay_dynamic_data_mapping_web_portlet_DDMPortlet',
+			ITEM_SELECTOR: 'com_liferay_item_selector_web_portlet_ItemSelectorPortlet'
+		};
+
+		Liferay.PropsValues = {
+			JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT: 0,
+			NTLM_AUTH_ENABLED: false,
+			UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE: 629145600
+		};
+
+		Liferay.ThemeDisplay = {
+
+			
+
+			
+				getLayoutId: function() {
+					return '107';
+				},
+
+				
+
+				getLayoutRelativeControlPanelURL: function() {
+					return '/group/guest/~/control_panel/manage?p_p_id=ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7';
+				},
+
+				getLayoutRelativeURL: function() {
+					return '/programacion-diaria1';
+				},
+				getLayoutURL: function() {
+					return 'https://www.ut.com.sv/programacion-diaria1';
+				},
+				getParentLayoutId: function() {
+					return '104';
+				},
+				isControlPanel: function() {
+					return false;
+				},
+				isPrivateLayout: function() {
+					return 'false';
+				},
+				isVirtualLayout: function() {
+					return false;
+				},
+			
+
+			getBCP47LanguageId: function() {
+				return 'es-ES';
+			},
+			getCanonicalURL: function() {
+
+				
+
+				return 'https\x3a\x2f\x2fwww\x2eut\x2ecom\x2esv';
+			},
+			getCDNBaseURL: function() {
+				return 'https://www.ut.com.sv';
+			},
+			getCDNDynamicResourcesHost: function() {
+				return '';
+			},
+			getCDNHost: function() {
+				return '';
+			},
+			getCompanyGroupId: function() {
+				return '248965';
+			},
+			getCompanyId: function() {
+				return '10095';
+			},
+			getDefaultLanguageId: function() {
+				return 'es_ES';
+			},
+			getDoAsUserIdEncoded: function() {
+				return '';
+			},
+			getLanguageId: function() {
+				return 'es_ES';
+			},
+			getParentGroupId: function() {
+				return '10100';
+			},
+			getPathContext: function() {
+				return '';
+			},
+			getPathImage: function() {
+				return '/image';
+			},
+			getPathJavaScript: function() {
+				return '/o/frontend-js-web';
+			},
+			getPathMain: function() {
+				return '/c';
+			},
+			getPathThemeImages: function() {
+				return 'https://www.ut.com.sv/o/ut-theme-2020/images';
+			},
+			getPathThemeRoot: function() {
+				return '/o/ut-theme-2020';
+			},
+			getPlid: function() {
+				return '292948';
+			},
+			getPortalURL: function() {
+				return 'https://www.ut.com.sv';
+			},
+			getScopeGroupId: function() {
+				return '10100';
+			},
+			getScopeGroupIdOrLiveGroupId: function() {
+				return '10100';
+			},
+			getSessionId: function() {
+				return '';
+			},
+			getSiteAdminURL: function() {
+				return 'https://www.ut.com.sv/group/guest/~/control_panel/manage?p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view';
+			},
+			getSiteGroupId: function() {
+				return '10100';
+			},
+			getURLControlPanel: function() {
+				return '/group/control_panel?refererPlid=292948';
+			},
+			getURLHome: function() {
+				return 'https\x3a\x2f\x2fwww\x2eut\x2ecom\x2esv\x2fhome';
+			},
+			getUserEmailAddress: function() {
+				return '';
+			},
+			getUserId: function() {
+				return '10097';
+			},
+			getUserName: function() {
+				return '';
+			},
+			isAddSessionIdToURL: function() {
+				return false;
+			},
+			isImpersonated: function() {
+				return false;
+			},
+			isSignedIn: function() {
+				return false;
+			},
+			isStateExclusive: function() {
+				return false;
+			},
+			isStateMaximized: function() {
+				return false;
+			},
+			isStatePopUp: function() {
+				return false;
+			}
+		};
+
+		var themeDisplay = Liferay.ThemeDisplay;
+
+		Liferay.AUI = {
+
+			
+
+			getAvailableLangPath: function() {
+				return 'available_languages.jsp?browserId=chrome&themeId=uttheme2020_WAR_uttheme2020&colorSchemeId=01&minifierType=js&languageId=es_ES&b=7310&t=1790718023952';
+			},
+			getCombine: function() {
+				return true;
+			},
+			getComboPath: function() {
+				return '/combo/?browserId=chrome&minifierType=&languageId=es_ES&b=7310&t=1790718024649&';
+			},
+			getDateFormat: function() {
+				return '%d/%m/%Y';
+			},
+			getEditorCKEditorPath: function() {
+				return '/o/frontend-editor-ckeditor-web';
+			},
+			getFilter: function() {
+				var filter = 'raw';
+
+				
+					
+						filter = 'min';
+					
+					
+
+				return filter;
+			},
+			getFilterConfig: function() {
+				var instance = this;
+
+				var filterConfig = null;
+
+				if (!instance.getCombine()) {
+					filterConfig = {
+						replaceStr: '.js' + instance.getStaticResourceURLParams(),
+						searchExp: '\\.js$'
+					};
+				}
+
+				return filterConfig;
+			},
+			getJavaScriptRootPath: function() {
+				return '/o/frontend-js-web';
+			},
+			getLangPath: function() {
+				return 'aui_lang.jsp?browserId=chrome&themeId=uttheme2020_WAR_uttheme2020&colorSchemeId=01&minifierType=js&languageId=es_ES&b=7310&t=1790718024649';
+			},
+			getPortletRootPath: function() {
+				return '/html/portlet';
+			},
+			getStaticResourceURLParams: function() {
+				return '?browserId=chrome&minifierType=&languageId=es_ES&b=7310&t=1790718024649';
+			}
+		};
+
+		Liferay.authToken = 'U1b7EQQN';
+
+		
+
+		Liferay.currentURL = '\x2fprogramacion-diaria1\x3fp_p_id\x3dProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x26p_p_lifecycle\x3d1\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x3ddetalleArchivos';
+		Liferay.currentURLEncoded = '\x252Fprogramacion-diaria1\x253Fp_p_id\x253DProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x2526p_p_lifecycle\x253D1\x2526p_p_state\x253Dnormal\x2526p_p_mode\x253Dview\x2526_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x253DdetalleArchivos';
+	// ]]>
+</script>
+
+<script src="/o/js_loader_config?t=1790718033108" type="text/javascript"></script>
+<script data-senna-track="permanent" src="/combo?browserId=chrome&minifierType=js&languageId=es_ES&b=7310&t=1790718024649&/o/frontend-js-aui-web/aui/aui/aui.js&/o/frontend-js-aui-web/liferay/modules.js&/o/frontend-js-aui-web/liferay/aui_sandbox.js&/o/frontend-js-aui-web/aui/attribute-base/attribute-base.js&/o/frontend-js-aui-web/aui/attribute-complex/attribute-complex.js&/o/frontend-js-aui-web/aui/attribute-core/attribute-core.js&/o/frontend-js-aui-web/aui/attribute-observable/attribute-observable.js&/o/frontend-js-aui-web/aui/attribute-extras/attribute-extras.js&/o/frontend-js-aui-web/aui/event-custom-base/event-custom-base.js&/o/frontend-js-aui-web/aui/event-custom-complex/event-custom-complex.js&/o/frontend-js-aui-web/aui/oop/oop.js&/o/frontend-js-aui-web/aui/aui-base-lang/aui-base-lang.js&/o/frontend-js-aui-web/liferay/dependency.js&/o/frontend-js-aui-web/liferay/util.js&/o/frontend-js-web/loader/config.js&/o/frontend-js-web/loader/loader.js&/o/frontend-js-web/liferay/dom_task_runner.js&/o/frontend-js-web/liferay/events.js&/o/frontend-js-web/liferay/lazy_load.js&/o/frontend-js-web/liferay/liferay.js&/o/frontend-js-web/liferay/global.bundle.js&/o/frontend-js-web/liferay/portlet.js&/o/frontend-js-web/liferay/workflow.js" type="text/javascript"></script>
+
+
+
+
+	
+
+	<script data-senna-track="temporary" src="/o/js_bundle_config?t=1790718041888" type="text/javascript"></script>
+
+
+<script data-senna-track="temporary" type="text/javascript">
+	// <![CDATA[
+		
+			
+				
+		
+
+		
+
+		
+	// ]]>
+</script>
+
+
+
+
+
+	
+		
+
+			
+
+			
+		
+		
+
+
+
+	
+		
+
+			
+
+			
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+	
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link class="lfr-css-file" data-senna-track="temporary" href="https://www.ut.com.sv/o/ut-theme-2020/css/main.css?browserId=chrome&amp;themeId=uttheme2020_WAR_uttheme2020&amp;minifierType=css&amp;languageId=es_ES&amp;b=7310&amp;t=1636345660000" id="liferayThemeCSS" rel="stylesheet" type="text/css" />
+
+
+
+
+	<style data-senna-track="temporary" type="text/css">
+		p {
+overflow-wrap: break-word;
+  word-wrap: break-word;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+ word-break: break-word;
+}
+
+a.lfr-nav-item.open {
+    color: #000099;
+}
+
+.accordion button.btn.btn-link {
+    color: #000099;
+}
+
+
+.estilo-pagina h3 {
+    font-family: 'Libre Franklin';
+    font-size: 1.5em;
+}
+div.estilo-pagina {
+margin-left: 0em;
+margin-right: 0em;
+/*text-align: justify;*/
+display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    flex-flow: column;
+}
+
+div.article{
+max-width: 800px;
+text-align: justify;
+align-self: center;
+}
+
+ul#contenedorMenuPrincipal {
+    width: 100%;
+}
+
+.main-menu .ctn-opciones-menu-principal ul {
+    justify-content: center;
+}
+/*mantener logo en barra azul */
+@media (min-width: 20px) {
+.logo-barra-superior  {
+    display: block;
+   max-width: 200px;
+}
+}
+@media (max-width: 991.98px){
+.logo-barra-menu {
+    display: none;
+}
+}
+
+/*logos de empresas relacionadas, manterlas pequeñas*/
+@media (max-width: 991.98px){
+.portlet-journal-content .journal-content-article img, .portlet-journal-content .journal-content-article .cke_widget_image {
+    max-width: 200px;
+}
+}
+
+
+
+/*Texto sobre imagen siempre izquierda superior*/
+div.carousel-caption.d-none.d-md-block{
+    top: 1%;
+    left: 1%;
+    right: unset;
+    bottom: unset;
+}
+
+.carousel-caption .slider-text {
+    float: left;
+    margin: 0%;
+}
+
+@media screen and (max-width: 768px){
+.raiz-item .carousel .carousel-caption .slider-text {
+    text-align: left;
+}
+}
+
+/*Mantener imagen a 650px*/
+.carousel-item.active{
+ max-height: 650px;
+}
+.w-100 {
+ max-height: 650px;
+}
+
+.control-menu-level-1-nav .toast-animation {
+    margin: 0px 6px 0;
+}
+
+.control-menu-level-1-nav  .icon-monospaced, .icon-monospaced[class^='icon-'], .icon-monospaced[class*=' icon-'] {
+    height: auto;
+}
+
+.tools-control-group > .control-menu-nav > li > .lfr-portal-tooltip > .control-menu-icon, .user-control-group > .control-menu-nav > li > .control-menu-icon {
+    height: auto !important;
+}
+
+.breadcrumb-item+.breadcrumb-item{
+    padding: 1em;
+}
+.raiz-item .document-container  .card{
+  background-color: transparent;
+ 
+}
+.document-container .card-type-asset .aspect-ratio .custom-control label, .card-type-asset .aspect-ratio .form-check-label{
+   margin: 1em;
+}
+
+a:hover{
+    color: inherit;
+    text-decoration: none;
+}
+
+.ui-datascroller-list a,  .ui-datascroller-list a:hover{
+    color:  #0016b0;
+    text-decoration: underline;
+}
+
+
+.raiz-item .copyright-section {
+     background-color: #152951;
+}
+
+.raiz-item .copyright-section a:hover{
+     color: #007bff;
+    text-decoration: underline;
+}
+
+/*portlet biblioteca documento: fix para posición de checkbox*/
+.portlet-document-library .custom-control.custom-checkbox label {
+    display: flex;
+}
+
+.breadcrumb-link {
+   display: inline;
+    align-self: center;
+}
+
+.breadcrumb-item+.breadcrumb-item::before { 
+    content: "";
+}
+	</style>
+
+
+
+
+
+	<style data-senna-track="temporary" type="text/css">
+
+		
+
+			
+
+		
+
+			
+
+		
+
+			
+
+		
+
+			
+
+		
+
+			
+
+		
+
+	</style>
+
+
+<style data-senna-track="temporary" type="text/css">
+</style>
+
+
+
+
+
+
+<script type="text/javascript">
+// <![CDATA[
+Liferay.on(
+	'ddmFieldBlur', function(event) {
+		if (window.Analytics) {
+			Analytics.send(
+				'fieldBlurred',
+				'Form',
+				{
+					fieldName: event.fieldName,
+					focusDuration: event.focusDuration,
+					formId: event.formId,
+					page: event.page
+				}
+			);
+		}
+	}
+);
+
+Liferay.on(
+	'ddmFieldFocus', function(event) {
+		if (window.Analytics) {
+			Analytics.send(
+				'fieldFocused',
+				'Form',
+				{
+					fieldName: event.fieldName,
+					formId: event.formId,
+					page: event.page
+				}
+			);
+		}
+	}
+);
+
+Liferay.on(
+	'ddmFormPageShow', function(event) {
+		if (window.Analytics) {
+			Analytics.send(
+				'pageViewed',
+				'Form',
+				{
+					formId: event.formId,
+					page: event.page,
+					title: event.title
+				}
+			);
+		}
+	}
+);
+
+Liferay.on(
+	'ddmFormSubmit', function(event) {
+		if (window.Analytics) {
+			Analytics.send(
+				'formSubmitted',
+				'Form',
+				{
+					formId: event.formId
+				}
+			);
+		}
+	}
+);
+
+Liferay.on(
+	'ddmFormView', function(event) {
+		if (window.Analytics) {
+			Analytics.send(
+				'formViewed',
+				'Form',
+				{
+					formId: event.formId,
+					title: event.title
+				}
+			);
+		}
+	}
+);
+// ]]>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script data-senna-track="temporary" type="text/javascript">
+	if (window.Analytics) {
+		window._com_liferay_document_library_analytics_isViewFileEntry = false;
+	}
+</script>
+
+
+
+  
+   <script src="https://www.ut.com.sv/o/ut-theme-2020/js/jquery-3.5.1.min.js"></script>
+	<script src="https://www.ut.com.sv/o/ut-theme-2020/js/jquery-ui.js"></script>
+  <!--
+   <script async src="https://www.ut.com.sv/o/ut-theme-2020/js/twitter.widgets.js" charset="utf-8"></script>
+  -->
+  
+  
+	<script src="/static/sgm/js/jquery.qtip.min.js"></script>
+	<script src="/static/sgm/js/jquery.fn.gantt.min.js"></script>
+	<script src="/static/sgm/js/highcharts/highcharts.js"></script>
+	 
+	<script src="https://www.ut.com.sv/o/ut-theme-2020/js/jquery.slidizle.js"></script>
+	<script src="https://www.ut.com.sv/o/ut-theme-2020/js/Chart.min.js"></script>
+    <link rel="stylesheet" href="/static/sgm/js/jquery.qtip.min.css" type="text/css">
+  
+  <!--
+  <link rel="stylesheet" href="css_folder/custom.css" type="text/css">
+  -->
+</head>
+
+<body class="chrome controls-visible  yui3-skin-sam guest-site signed-out public-page site">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<nav aria-label="Enlaces rápidos" class="quick-access-nav" id="mlqy_quickAccessNav">
+		<h1 class="hide-accessible">Navegación</h1>
+
+		<ul>
+			
+				<li><a href="#main-content">Saltar al contenido</a></li>
+			
+
+			
+
+		</ul>
+	</nav>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+  <div class="container-fluid" id="contenedor">
+    <nav class="navbar navbar-light bg-light" id="social-navbar">
+   	 <a class="navbar-brand logo-barra-superior" href="/home">
+        <img src="https://www.ut.com.sv/o/ut-theme-2020/images/logo-u.png" alt="" loading="lazy" id="logo" class="img-fluid" ></img>		
+      </a>
+   	 <a class="navbar-brand logo-barra-superior2" href="/home" style="display: none;">
+		<img src="https://www.ut.com.sv/o/ut-theme-2020/images/logo-u2.png" alt=""  id="logo2" class="img-fluid-sm" ></img>
+      </a>	  
+     <div class="form-row align-items-center">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_com_liferay_portal_search_web_portlet_SearchPortlet_  portlet-static portlet-static-end decorate portlet-search " id="p_p_id_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_">
+		<span id="p_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426"></span>
+
+
+
+
+	
+
+	
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+<section class="portlet" id="portlet_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426">
+
+
+	<div class="portlet-content">
+
+		<div class="autofit-float autofit-row portlet-header">
+			<div class="autofit-col autofit-col-expand">
+				<h2 class="portlet-title-text">Búsqueda web</h2>
+			</div>
+
+			<div class="autofit-col autofit-col-end">
+				<div class="autofit-section">
+				</div>
+			</div>
+		</div>
+
+		
+			<div class=" portlet-content-container">
+				
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+						
+
+
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form action="https://www.ut.com.sv/programacion-diaria1?p_p_id=com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;p_p_mode=view&amp;_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_mvcPath=%2Fsearch.jsp&amp;_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_redirect=https%3A%2F%2Fwww.ut.com.sv%2Fprogramacion-diaria1%3Fp_p_id%3Dcom_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview" class="form  " data-fm-namespace="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_" id="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm" method="get" name="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm" >
+	
+		<fieldset class="input-container" disabled="disabled">
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+		
+
+		
+			
+				<input  class="field form-control"  id="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_formDate"    name="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_formDate"     type="hidden" value="1790909210926"   />
+			
+		
+
+		
+	
+
+
+
+
+
+
+
+
+
+	<input name="p_p_id" type="hidden" value="com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426" /><input name="p_p_lifecycle" type="hidden" value="0" /><input name="p_p_state" type="hidden" value="maximized" /><input name="p_p_mode" type="hidden" value="view" /><input name="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_mvcPath" type="hidden" value="/search.jsp" /><input name="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_redirect" type="hidden" value="https://www.ut.com.sv/programacion-diaria1?p_p_id=com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view" />
+
+	<div class="form-group-autofit search-input-group">
+		<div class="form-group-item">
+			<div class="input-group">
+				<div class="input-group-item">
+					<input class="form-control input-group-inset input-group-inset-after search-input search-portlet-keywords-input" id="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_keywords" name="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_keywords" placeholder="Buscar" type="text" value="" />
+
+					<div class="input-group-inset-item input-group-inset-item-after">
+						<button class="btn btn-light btn-unstyled" onclick="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_search();" type="submit">
+							
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		<span
+			class=""
+			
+		>
+			
+				
+					
+
+
+	
+		<span  id="qfkd____"><svg aria-hidden="true" class="lexicon-icon lexicon-icon-search" focusable="false" ><use href="https://www.ut.com.sv/o/ut-theme-2020/images/clay/icons.svg#search"></use></svg></span>
+	
+	
+
+
+	
+		<span class="taglib-text hide-accessible">null</span>
+	
+
+				
+			
+		</span>
+	
+
+
+
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+
+		
+
+		
+			
+			
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+		
+
+		
+			
+				<input  class="field form-control"  id="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_scope"    name="_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_scope"     type="hidden" value="this-site"   />
+			
+		
+
+		
+	
+
+
+
+
+
+
+
+
+
+			
+		
+	</div>
+
+	<script type="text/javascript">
+// <![CDATA[
+
+		window._com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_search = function () {
+			var keywords =
+				document._com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm._com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_keywords.value;
+
+			keywords = keywords.replace(/^\s+|\s+$/, '');
+
+			if (keywords != '') {
+				submitForm(document._com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm);
+			}
+		};
+	
+// ]]>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+		</fieldset>
+	
+</form>
+
+
+
+<script type="text/javascript">
+// <![CDATA[
+AUI().use('liferay-form', function(A) {(function() {var $ = AUI.$;var _ = AUI._;
+	Liferay.Form.register(
+		{
+			id: '_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm'
+
+			
+				, fieldRules: [
+
+					
+
+				]
+			
+
+			
+				, onSubmit: function(event) {
+					_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_search(); event.preventDefault();
+				}
+			
+
+			, validateOnBlur: true
+		}
+	);
+
+	var onDestroyPortlet = function(event) {
+		if (event.portletId === 'com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426') {
+			delete Liferay.Form._INSTANCES['_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm'];
+		}
+	};
+
+	Liferay.on('destroyPortlet', onDestroyPortlet);
+
+	
+		A.all('#_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm .input-container').removeAttribute('disabled');
+	
+
+	Liferay.fire(
+		'_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_formReady',
+		{
+			formName: '_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_fm'
+		}
+	);
+})();});
+// ]]>
+</script>
+
+	
+	
+					
+				
+			
+		
+	
+	
+
+
+	</div>
+
+			</div>
+		
+	</div>
+</section>
+	
+
+		
+		
+
+
+
+
+
+
+
+	</div>
+
+
+
+
+       </div>
+      <ul class="nav justify-content-end" id="access-nav">
+        <li class="nav-item">
+			<a data-redirect="true" href="https://www.ut.com.sv/c/portal/login?p_l_id=292948" id="sign-in" rel="nofollow">Ingresar</a>
+        
+  <!--
+<label value="Guest" />  
+-->
+    <!--
+<label value="Guest" />  
+-->
+
+        </li>
+        <li class="nav-item">
+		
+        </li>	
+        <li class="nav-item">
+          <a class="nav-link" href="/sitemap">Mapa del sitio</a>
+        </li>
+      </ul>
+    </nav>
+    <!-- Menú -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light main-menu">
+      <a class="navbar-brand logo-barra-menu" href="#">
+        <img src="https://www.ut.com.sv/o/ut-theme-2020/images/logo-u.png" alt="" loading="lazy" id="logo" class="img-fluid">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse ctn-opciones-menu-principal" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto" id="contenedorMenuPrincipal">
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold" href="#" data-toggle="collapse" data-target="#navbarToggleExternalContent_174"
+           id="menuPadre_174"
+              aria-controls="navbarToggleExternalContent_174" aria-expanded="false" aria-label="Toggle navigation">Institución
+              <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold" href="#" data-toggle="collapse" data-target="#navbarToggleExternalContent_190"
+           id="menuPadre_190"
+              aria-controls="navbarToggleExternalContent_190" aria-expanded="false" aria-label="Toggle navigation">Operación
+              <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold" href="#" data-toggle="collapse" data-target="#navbarToggleExternalContent_193"
+           id="menuPadre_193"
+              aria-controls="navbarToggleExternalContent_193" aria-expanded="false" aria-label="Toggle navigation">Mercado
+              <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold" href="#" data-toggle="collapse" data-target="#navbarToggleExternalContent_199"
+           id="menuPadre_199"
+              aria-controls="navbarToggleExternalContent_199" aria-expanded="false" aria-label="Toggle navigation">Reportes
+              <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold" href="#" data-toggle="collapse" data-target="#navbarToggleExternalContent_181"
+           id="menuPadre_181"
+              aria-controls="navbarToggleExternalContent_181" aria-expanded="false" aria-label="Toggle navigation">Inscripción como PM
+              <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    
+    <div class="collapse ctn-menu-subopciones"  data-parent="#contenedorMenuPrincipal" id="navbarToggleExternalContent_174">
+      <div class="p-4 text-white">
+        <div class="card-group">
+         <div class="row">
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Conócenos</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/quienes-somos">Quiénes somos</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/que-hacemos">Qué hacemos</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/misionvision">Visión y Misión</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/11">Estructura organizativa</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/memoria-de-labores">Memoria de labores</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Regulación</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/marcoregulatorio">Marco regulatorio</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/hechos-relevantes">Hechos relevantes</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/informes-de-regulacion">Informes de regulación</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Sistema de gestión de calidad</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/politica-de-calidad">Política de calidad</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/mapa-de-procesos">Red de procesos</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Gestión contáctenos</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/contactaut">Contáctenos</a></li>
+                  </ul>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+    </div>
+    <div class="collapse ctn-menu-subopciones"  data-parent="#contenedorMenuPrincipal" id="navbarToggleExternalContent_190">
+      <div class="p-4 text-white">
+        <div class="card-group">
+         <div class="row">
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Información general del sistema eléctrico de potencia</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/diagrama-unifilar">Diagrama unifilar</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/generacion-por-tecnologia">Generación por tecnología</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/capacidad-disponible">Capacidad disponible por recurso</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Tableros de la operación</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/curva-de-demanda">Curva de demanda diaria</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/niveles-de-embalses">Niveles de embalses</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/operacion-diaria">Operación diaria</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/programacion-de-indisponibilidades-2">Programación de Indisponibilidades</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/programa-de-mantenimiento-anual">Programación de mantenimientos</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Base de datos técnica y estudios</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/informacion-tecnica">Base de datos técnica del PSS/E</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/estudios-de-red">Estudios de red</a></li>
+                  </ul>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+    </div>
+    <div class="collapse ctn-menu-subopciones"  data-parent="#contenedorMenuPrincipal" id="navbarToggleExternalContent_193">
+      <div class="p-4 text-white">
+        <div class="card-group">
+         <div class="row">
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Tableros de mercado</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/predespacho-diario-2">Predespacho diario</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/programacion-semanal-2">Programacion semanal</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/exportaciones-e-importaciones-2">Exportaciones e importaciones</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/spot-promedio-diario-2">Spot promedio diario</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Programaciones</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/programacion-diaria1">Programación diaria</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/programacion-semanal1">Programación semanal</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/programacion-anual1">Programación anual</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Informes de mercado</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                               
+                                	<li style="list-style-type:none"><b>Estadístico</b>
+                                     <ul>
+            	                           <li style="list-style-type:none"><a href="https://www.ut.com.sv/estadistico-mensual">Mensual</a></li>
+            	                           <li style="list-style-type:none"><a href="https://www.ut.com.sv/anual">Anual</a></li>
+        	                        </ul>
+									</li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/factores-de-forma">Factores de forma</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Liquidación del mercado</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/calendario-de-liquidacion">Calendario de facturación y liquidación</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/formatos-gestion-garantias-efectivo">Formatos para gestión de garantías en efectivo</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Auditorías PM</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/auditores-simec">Auditores SIMEC</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/auditores-en-ccc-y-parametros-tecnicos">Auditores en CCC</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/auditores-en-cvnc-y-cayd">Auditores en CVNC y CAyD</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b>Instructivos y formularios</b></h7>
+                <hr>
+	              <ul>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/procesopredespacho">Flujo predespacho</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/instructivos">Instructivo DTE</a></li>
+                       <!-- cuarto nivel-->
+                            	<li style="list-style-type:none"><a href="https://www.ut.com.sv/formularios-simec">Formularios SIMEC</a></li>
+                  </ul>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+    </div>
+    <div class="collapse ctn-menu-subopciones"  data-parent="#contenedorMenuPrincipal" id="navbarToggleExternalContent_199">
+      <div class="p-4 text-white">
+        <div class="card-group">
+         <div class="row">
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b><a href="https://www.ut.com.sv/reportes">Reportes estadísticos públicos</a></b></h7>
+                <hr>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+    </div>
+    <div class="collapse ctn-menu-subopciones"  data-parent="#contenedorMenuPrincipal" id="navbarToggleExternalContent_181">
+      <div class="p-4 text-white">
+        <div class="card-group">
+         <div class="row">
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b><a href="https://www.ut.com.sv/guia-inscripcion-pm">Requisitos</a></b></h7>
+                <hr>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                	<h7 class="card-title"><b><a href="https://www.ut.com.sv/calculo-de-primera-garantia">Calculadora de primera garantía</a></b></h7>
+                <hr>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slider -->
+    	<section id="content">
+
+		<h2 class="hide-accessible" role="heading" aria-level="1">Programación diaria</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="portlet-layout row">
+        <div class="col-md-2 d-none d-md-block portlet-column portlet-column-first" 
+        id="column-1">
+                <div class="portlet-dropzone portlet-column-content portlet-column-content-first" id="layout-column_column-1">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_  portlet-static portlet-static-end decorate portlet-navigation " id="p_p_id_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u_">
+		<span id="p_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u"></span>
+
+
+
+
+	
+
+	
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+<section class="portlet" id="portlet_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u">
+
+
+	<div class="portlet-content">
+
+		<div class="autofit-float autofit-row portlet-header">
+			<div class="autofit-col autofit-col-expand">
+				<h2 class="portlet-title-text">Programaciones</h2>
+			</div>
+
+			<div class="autofit-col autofit-col-end">
+				<div class="autofit-section">
+				</div>
+			</div>
+		</div>
+
+		
+			<div class=" portlet-content-container">
+				
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+						
+
+
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		
+	<div aria-label="Páginas del sitio web" class="list-menu">
+		<ul class="layouts level-1">
+
+
+
+				<li class="lfr-nav-item open selected active">
+						<a class="lfr-nav-item open selected active" href="https://www.ut.com.sv/programacion-diaria1" >Programación diaria</a>
+
+				</li>
+
+
+
+				<li class="lfr-nav-item open">
+						<a class="lfr-nav-item open" href="https://www.ut.com.sv/programacion-semanal1" >Programación semanal</a>
+
+				</li>
+
+
+
+				<li class="lfr-nav-item open">
+						<a class="lfr-nav-item open" href="https://www.ut.com.sv/programacion-anual1" >Programación anual</a>
+
+				</li>
+		</ul>
+	</div>
+
+	
+	
+	
+
+
+	
+	
+					
+				
+			
+		
+	
+	
+
+
+	</div>
+
+			</div>
+		
+	</div>
+</section>
+	
+
+		
+		
+
+
+
+
+
+
+
+	</div>
+
+
+
+
+</div>
+        </div>
+        <div class="col-md-10 col-sm-12 portlet-column portlet-column-last" 
+        id="column-2">
+                <div class="portlet-dropzone portlet-column-content portlet-column-content-last" id="layout-column_column-2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	<div class="portlet-boundary portlet-boundary_ProgramacionDiaria_WAR_PredespachoPublico_  portlet-static portlet-static-end decorate  " id="p_p_id_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_">
+		<span id="p_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7"></span>
+
+
+
+
+	
+
+	
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+<section class="portlet" id="portlet_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7">
+
+
+	<div class="portlet-content">
+
+		<div class="autofit-float autofit-row portlet-header">
+			<div class="autofit-col autofit-col-expand">
+				<h2 class="portlet-title-text">Descarga Archivos Programacion diaria (Fecha=&gt; 2026-10-01 20:46:50)</h2>
+			</div>
+
+			<div class="autofit-col autofit-col-end">
+				<div class="autofit-section">
+				</div>
+			</div>
+		</div>
+
+		
+			<div class=" portlet-content-container">
+				
+
+
+	<div class="portlet-body">
+
+
+
+	
+		
+			
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+				
+
+				
+					
+						
+
+
+	
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+     
+    
+    
+        <i> No existen archivos a mostrar  </i>
+        <br>
+           <b><a class="anchor" href="https://www.ut.com.sv/programacion-diaria1?p_p_id=ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view">
+                    <b>&nbsp;Consultar de Nuevo&nbsp;</b>
+                </a> </b>
+    
+    
+</div>
+<div>
+    
+    <br><br><br>
+</div>
+
+
+
+
+	
+	
+					
+				
+			
+		
+	
+	
+
+
+	</div>
+
+			</div>
+		
+	</div>
+</section>
+	
+
+		
+		
+
+
+
+
+
+
+
+	</div>
+
+
+
+
+</div>
+        </div>
+</div>
+
+<form action="#" aria-hidden="true" class="hide" id="hrefFm" method="post" name="hrefFm"><span></span><input hidden type="submit"/></form>
+
+	
+	</section>
+    
+ 
+    
+    
+    <div class="justify-content-md-center copyright-section">
+      <div class="col-md-auto">
+        <b><div style="font-size:14px; font-family: Libre Franklin;"><a href="https://mail01.ut.com.sv/" target=¿_blank¿>Acceso a empleados</a> <br/><br/> <div style="color: white;">2022 Unidad de Transacciones. Todos los derechos reservados.</div></div></b>
+      </div>
+    </div>
+  </div>
+
+ <script src="https://www.ut.com.sv/o/ut-theme-2020/js/bootstrap.bundle.min.js"></script>
+ 
+  <script src="https://www.ut.com.sv/o/ut-theme-2020/js/splide.min.js" type="text/javascript"> </script> 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+	
+
+
+
+	
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+	
+
+
+
+	
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+// <![CDATA[
+
+	
+		
+
+			
+
+			
+		
+	
+
+// ]]>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+	// <![CDATA[
+
+		
+
+		Liferay.currentURL = '\x2fprogramacion-diaria1\x3fp_p_id\x3dProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x26p_p_lifecycle\x3d1\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x3ddetalleArchivos';
+		Liferay.currentURLEncoded = '\x252Fprogramacion-diaria1\x253Fp_p_id\x253DProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x2526p_p_lifecycle\x253D1\x2526p_p_state\x253Dnormal\x2526p_p_mode\x253Dview\x2526_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x253DdetalleArchivos';
+
+	// ]]>
+</script>
+
+
+
+	
+
+	
+
+	<script type="text/javascript">
+		// <![CDATA[
+			
+				
+
+				
+
+				
+			
+		// ]]>
+	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+		
+
+		
+	
+
+
+<script type="text/javascript">
+// <![CDATA[
+
+	
+		Liferay.Portlet.register('com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u');
+	
+
+	Liferay.Portlet.onLoad(
+		{
+			canEditTitle: false,
+			columnPos: 0,
+			isStatic: 'end',
+			namespacedId: 'p_p_id_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u_',
+			portletId: 'com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u',
+			refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d292948\x26p_p_id\x3dcom_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_T8M1iBnM5Q2u\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d1\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3dcolumn-1\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d1\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fprogramacion-diaria1\x253Fp_p_id\x253DProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x2526p_p_lifecycle\x253D1\x2526p_p_state\x253Dnormal\x2526p_p_mode\x253Dview\x2526_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x253DdetalleArchivos',
+			refreshURLData: {}
+		}
+	);
+(function() {var $ = AUI.$;var _ = AUI._;
+	var onVote = function (event) {
+		if (window.Analytics) {
+			Analytics.send('VOTE', 'Ratings', {
+				className: event.className,
+				classPK: event.classPK,
+				ratingType: event.ratingType,
+				score: event.score,
+			});
+		}
+	};
+
+	var onDestroyPortlet = function () {
+		Liferay.detach('ratings:vote', onVote);
+		Liferay.detach('destroyPortlet', onDestroyPortlet);
+	};
+
+	Liferay.on('ratings:vote', onVote);
+	Liferay.on('destroyPortlet', onDestroyPortlet);
+})();(function() {var $ = AUI.$;var _ = AUI._;
+	var onShare = function (data) {
+		if (window.Analytics) {
+			Analytics.send('shared', 'SocialBookmarks', {
+				className: data.className,
+				classPK: data.classPK,
+				type: data.type,
+				url: data.url,
+			});
+		}
+	};
+
+	var onDestroyPortlet = function () {
+		Liferay.detach('socialBookmarks:share', onShare);
+		Liferay.detach('destroyPortlet', onDestroyPortlet);
+	};
+
+	Liferay.on('socialBookmarks:share', onShare);
+	Liferay.on('destroyPortlet', onDestroyPortlet);
+})();(function() {var $ = AUI.$;var _ = AUI._;
+	var onDestroyPortlet = function () {
+		Liferay.detach('messagePosted', onMessagePosted);
+		Liferay.detach('destroyPortlet', onDestroyPortlet);
+	};
+
+	Liferay.on('destroyPortlet', onDestroyPortlet);
+
+	var onMessagePosted = function (event) {
+		if (window.Analytics) {
+			Analytics.send('posted', 'Comment', {
+				className: event.className,
+				classPK: event.classPK,
+				commentId: event.commentId,
+				text: event.text,
+			});
+		}
+	};
+
+	Liferay.on('messagePosted', onMessagePosted);
+})();(function() {var $ = AUI.$;var _ = AUI._;
+	var pathnameRegexp = /\/documents\/(\d+)\/(\d+)\/(.+?)\/([^&]+)/;
+
+	function handleDownloadClick(event) {
+		if (event.target.nodeName.toLowerCase() === 'a' && window.Analytics) {
+			var anchor = event.target;
+			var match = pathnameRegexp.exec(anchor.pathname);
+
+			var fileEntryId =
+				anchor.dataset.analyticsFileEntryId ||
+				(anchor.parentElement &&
+					anchor.parentElement.dataset.analyticsFileEntryId);
+
+			if (fileEntryId && match) {
+				var getParameterValue = function (parameterName) {
+					var result = null;
+
+					anchor.search
+						.substr(1)
+						.split('&')
+						.forEach(function (item) {
+							var tmp = item.split('=');
+
+							if (tmp[0] === parameterName) {
+								result = decodeURIComponent(tmp[1]);
+							}
+						});
+
+					return result;
+				};
+
+				Analytics.send('documentDownloaded', 'Document', {
+					groupId: match[1],
+					fileEntryId: fileEntryId,
+					preview: !!window._com_liferay_document_library_analytics_isViewFileEntry,
+					title: decodeURIComponent(match[3].replace(/\+/gi, ' ')),
+					version: getParameterValue('version'),
+				});
+			}
+		}
+	}
+
+	Liferay.once('destroyPortlet', function () {
+		document.body.removeEventListener('click', handleDownloadClick);
+	});
+
+	Liferay.once('portletReady', function () {
+		document.body.addEventListener('click', handleDownloadClick);
+	});
+})();
+	if (window.svg4everybody && Liferay.Data.ICONS_INLINE_SVG) {
+		svg4everybody(
+			{
+				polyfill: true,
+				validate: function (src, svg, use) {
+					return !src || !src.startsWith('#');
+				}
+			}
+		);
+	}
+
+	
+		Liferay.Portlet.register('com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426');
+	
+
+	Liferay.Portlet.onLoad(
+		{
+			canEditTitle: false,
+			columnPos: 0,
+			isStatic: 'end',
+			namespacedId: 'p_p_id_com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426_',
+			portletId: 'com_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426',
+			refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d292948\x26p_p_id\x3dcom_liferay_portal_search_web_portlet_SearchPortlet_INSTANCE_4426\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d1\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3dnull\x26p_p_col_pos\x3dnull\x26p_p_col_count\x3dnull\x26p_p_static\x3d1\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fprogramacion-diaria1\x253Fp_p_id\x253DProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x2526p_p_lifecycle\x253D1\x2526p_p_state\x253Dnormal\x2526p_p_mode\x253Dview\x2526_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x253DdetalleArchivos\x26settingsScope\x3dportletInstance',
+			refreshURLData: {"folder":["2025"]}
+		}
+	);
+
+	
+		Liferay.Portlet.register('ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7');
+	
+
+	Liferay.Portlet.onLoad(
+		{
+			canEditTitle: false,
+			columnPos: 0,
+			isStatic: 'end',
+			namespacedId: 'p_p_id_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_',
+			portletId: 'ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7',
+			refreshURL: '\x2fc\x2fportal\x2frender_portlet\x3fp_l_id\x3d292948\x26p_p_id\x3dProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x26p_p_lifecycle\x3d0\x26p_t_lifecycle\x3d1\x26p_p_state\x3dnormal\x26p_p_mode\x3dview\x26p_p_col_id\x3dcolumn-2\x26p_p_col_pos\x3d0\x26p_p_col_count\x3d1\x26p_p_isolated\x3d1\x26currentURL\x3d\x252Fprogramacion-diaria1\x253Fp_p_id\x253DProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7\x2526p_p_lifecycle\x253D1\x2526p_p_state\x253Dnormal\x2526p_p_mode\x253Dview\x2526_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax\x2eportlet\x2eaction\x253DdetalleArchivos',
+			refreshURLData: {"folder":["2025"],"_ProgramacionDiaria_WAR_PredespachoPublico_INSTANCE_Sw0UJdEgNCl7_javax.portlet.action":["detalleArchivos"]}
+		}
+	);
+Liferay.Loader.require('metal-dom/src/all/dom', 'frontend-js-web/liferay/toast/commands/OpenToast.es', function(metalDomSrcAllDom, frontendJsWebLiferayToastCommandsOpenToastEs) {
+try {
+(function() {
+var dom = metalDomSrcAllDom;
+var $ = AUI.$;var _ = AUI._;
+	var focusInPortletHandler = dom.delegate(
+		document,
+		'focusin',
+		'.portlet',
+		function(event) {
+			dom.addClasses(dom.closest(event.delegateTarget, '.portlet'), 'open');
+		}
+	);
+
+	var focusOutPortletHandler = dom.delegate(
+		document,
+		'focusout',
+		'.portlet',
+		function(event) {
+			dom.removeClasses(dom.closest(event.delegateTarget, '.portlet'), 'open');
+		}
+	);
+
+})();
+(function() {
+var toastCommands = frontendJsWebLiferayToastCommandsOpenToastEs;
+var $ = AUI.$;var _ = AUI._;
+			AUI().use(
+				'liferay-session',
+				function() {
+					Liferay.Session = new Liferay.SessionBase(
+						{
+							autoExtend: true,
+							redirectOnExpire: false,
+							redirectUrl: 'https\x3a\x2f\x2fwww\x2eut\x2ecom\x2esv\x2fhome',
+							sessionLength: 890,
+							warningLength: 0
+						}
+					);
+
+					
+				}
+			);
+		
+})();
+} catch (err) {
+	console.error(err);
+}
+});AUI().use('liferay-menu', 'aui-base', function(A) {(function() {var $ = AUI.$;var _ = AUI._;
+	if (A.UA.mobile) {
+		Liferay.Util.addInputCancel();
+	}
+})();(function() {var $ = AUI.$;var _ = AUI._;
+	new Liferay.Menu();
+
+	var liferayNotices = Liferay.Data.notices;
+
+	for (var i = 0; i < liferayNotices.length; i++) {
+		Liferay.Util.openToast(liferayNotices[i]);
+	}
+
+})();});
+// ]]>
+</script>
+
+
+
+
+
+
+
+
+
+<script src="https://www.ut.com.sv/o/ut-theme-2020/js/main.js?browserId=chrome&amp;minifierType=js&amp;languageId=es_ES&amp;b=7310&amp;t=1636345660000" type="text/javascript"></script>
+
+
+
+
+<script type="text/javascript">
+	// <![CDATA[
+		AUI().use(
+			'aui-base',
+			function(A) {
+				var frameElement = window.frameElement;
+
+				if (frameElement && frameElement.getAttribute('id') === 'simulationDeviceIframe') {
+					A.getBody().addClass('lfr-has-simulation-panel');
+				}
+			}
+		);
+	// ]]>
+</script><script type="text/javascript">
+// <![CDATA[
+Liferay.Loader.require('frontend-js-tooltip-support-web@3.0.4/index', function(frontendJsTooltipSupportWeb304Index) {
+try {
+(function() {
+var TooltipSupport = frontendJsTooltipSupportWeb304Index;
+TooltipSupport.default()
+})();
+} catch (err) {
+	console.error(err);
+}
+});
+// ]]>
+</script><script type="text/javascript">
+// <![CDATA[
+Liferay.Loader.require('frontend-js-collapse-support-web@1.0.10/index', function(frontendJsCollapseSupportWeb1010Index) {
+try {
+(function() {
+var CollapseProvider = frontendJsCollapseSupportWeb1010Index;
+CollapseProvider.default()
+})();
+} catch (err) {
+	console.error(err);
+}
+});
+// ]]>
+</script><script type="text/javascript">
+// <![CDATA[
+Liferay.Loader.require('remote-app-support-web@1.0.5/index', function(remoteAppSupportWeb105Index) {
+try {
+(function() {
+var RemoteAppSupport = remoteAppSupportWeb105Index;
+RemoteAppSupport.default()
+})();
+} catch (err) {
+	console.error(err);
+}
+});
+// ]]>
+</script><script type="text/javascript">
+// <![CDATA[
+Liferay.Loader.require('frontend-js-tabs-support-web@1.0.8/index', function(frontendJsTabsSupportWeb108Index) {
+try {
+(function() {
+var TabsProvider = frontendJsTabsSupportWeb108Index;
+TabsProvider.default()
+})();
+} catch (err) {
+	console.error(err);
+}
+});
+// ]]>
+</script><script type="text/javascript">
+// <![CDATA[
+Liferay.Loader.require('frontend-js-dropdown-support-web@1.0.8/index', function(frontendJsDropdownSupportWeb108Index) {
+try {
+(function() {
+var DropdownProvider = frontendJsDropdownSupportWeb108Index;
+DropdownProvider.default()
+})();
+} catch (err) {
+	console.error(err);
+}
+});
+// ]]>
+</script><script type="text/javascript">
+// <![CDATA[
+Liferay.Loader.require('frontend-js-alert-support-web@1.0.7/index', function(frontendJsAlertSupportWeb107Index) {
+try {
+(function() {
+var AlertProvider = frontendJsAlertSupportWeb107Index;
+AlertProvider.default()
+})();
+} catch (err) {
+	console.error(err);
+}
+});
+// ]]>
+</script>  
+</body>
+
+</html>
+
