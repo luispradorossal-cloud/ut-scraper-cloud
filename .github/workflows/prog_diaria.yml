@@ -1,9 +1,7 @@
 name: UT Scraper - Prog Diaria
 
 on:
-  schedule:
-    # 5:25 PM hora El Salvador (CST = UTC-6) => 23:29 UTC
-    - cron: '25 23 * * *'
+  # schedule desactivado 2026-10-03 a pedido de Luis (reactivar restaurando el cron)
   workflow_dispatch:
 
 jobs:
