@@ -106,7 +106,7 @@ def main():
         d += timedelta(days=1)
     print(f"objetivo: {len(best)} archivos")
     writers, handles = {}, {}
-    man = open(OUT / "manifest.csv", "w", newline="")
+    man = open(OUT / ("manifest.csv" if REQ.get("full") else f"manifest_{START:%Y%m%d}_{END:%Y%m%d}.csv"), "w", newline="")
     mw = csv.writer(man); mw.writerow(["fecha", "tipo", "archivo", "carpeta", "estado", "filas"])
     for i, ((d, tipo), (_, fname, folder)) in enumerate(sorted(best.items())):
         content = download_bytes(s, fname, folder)
@@ -117,7 +117,7 @@ def main():
         except Exception as e:
             mw.writerow([d, tipo, fname, folder, f"error:{type(e).__name__}", 0]); continue
         if d.year not in writers:
-            handles[d.year] = open(OUT / f"ut_hourly_{d.year}.csv", "w", newline="")
+            handles[d.year] = open(OUT / (f"ut_hourly_{d.year}.csv" if REQ.get("full") else f"ut_hourly_{START:%Y%m%d}_{END:%Y%m%d}.csv"), "w", newline="")
             writers[d.year] = csv.DictWriter(handles[d.year], fieldnames=FIELDS)
             writers[d.year].writeheader()
         for r in rows:
