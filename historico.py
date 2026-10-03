@@ -105,6 +105,10 @@ def main():
         best[(d, "F")] = (0, f"Prog_Diaria{ddmmyy}.xlsx", str(d.year))
         d += timedelta(days=1)
     print(f"objetivo: {len(best)} archivos")
+    if REQ.get("listar"):
+        names = list_files(s, str(END.year))
+        (OUT / "listado_reciente.txt").write_text("\n".join(names[:60]))
+
     writers, handles = {}, {}
     man = open(OUT / ("manifest.csv" if REQ.get("full") else f"manifest_{START:%Y%m%d}_{END:%Y%m%d}.csv"), "w", newline="")
     mw = csv.writer(man); mw.writerow(["fecha", "tipo", "archivo", "carpeta", "estado", "filas"])
